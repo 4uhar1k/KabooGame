@@ -7,8 +7,8 @@ import kotlin.test.*
 class CardTest {
     private val aceOfSpades = Card(CardSuit.SPADES, CardValue.ACE)
     private val jackOfClubs = Card(CardSuit.CLUBS, CardValue.JACK)
-    private val kingOfHearts = Card(CardSuit.HEARTS, CardValue.QUEEN)
-    private val queenOfDiamonds = Card(CardSuit.DIAMONDS, CardValue.JACK)
+    private val kingOfHearts = Card(CardSuit.HEARTS, CardValue.KING)
+    private val queenOfDiamonds = Card(CardSuit.DIAMONDS, CardValue.QUEEN)
 
     // unicode characters for the suits, as those should be used by [WarCard.toString]
     private val heartsChar = '\u2665' // ♥
