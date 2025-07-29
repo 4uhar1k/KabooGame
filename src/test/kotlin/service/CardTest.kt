@@ -16,7 +16,11 @@ class CardTest {
     private val spadesChar = '\u2660' // ♠
     private val clubsChar = '\u2663' // ♣
 
-    @Test //tests, how will the card's value be converted to string
+    /**
+     * tests, how will the card's value be converted to string
+     */
+
+    @Test
     fun testToString() {
         assertEquals(spadesChar + "A", aceOfSpades.toString())
         assertEquals(clubsChar + "J", jackOfClubs.toString())
@@ -24,7 +28,10 @@ class CardTest {
         assertEquals(diamondsChar + "Q", queenOfDiamonds.toString())
     }
 
-    @Test //tests the length of converted string a card's value
+    /**
+     * tests the length of converted string a card's value
+     */
+    @Test
     fun testToStringLength(){
         CardSuit.entries.forEach { suit ->
             CardValue.entries.forEach { value ->
