@@ -14,4 +14,18 @@ class PlayerTest {
         assertEquals("Vladimir", player1.name)
         assertEquals("Player", player2.name)
     }
+
+    /**
+     * tests if the player will be initialized correctly
+     */
+    @Test
+    fun testInitializing(){
+        assertEquals("Vladimir", player1.name)
+        assertEquals(false, player1.knocked)
+        assertEquals(false, player1.viewedCards)
+        assertEquals(null, player1.hand)
+        assertEquals(null, player1.ownSelected)
+        assertEquals(null, player1.otherSelected)
+        assertEquals(mutableListOf(), player1.deck)
+    }
 }
