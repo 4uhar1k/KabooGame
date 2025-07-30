@@ -1,8 +1,10 @@
 package entity
 
+import tools.aqua.bgw.util.Stack
+
 class Kaboo {
     val currentPlayer: Player? = null
-    val players = mutableListOf<Player>()
-    val drawNewStack = mutableListOf<Card>()
-    val drawUsedStack = mutableListOf<Card>()
+    val players : MutableList<Player> = mutableListOf()
+    val drawNewStack : Stack<Card> = Stack()
+    val drawUsedStack : Stack<Card> = Stack()
 }
