@@ -41,4 +41,25 @@ class CardTest {
             }
         }
     }
+
+    /**
+     * tests, how will the card's value be converted to int
+     */
+    @Test
+    fun testToInt(){
+        assertEquals(2, CardValue.TWO.toInt())
+        assertEquals(3, CardValue.THREE.toInt())
+        assertEquals(4, CardValue.FOUR.toInt())
+        assertEquals(5, CardValue.FIVE.toInt())
+        assertEquals(6, CardValue.SIX.toInt())
+        assertEquals(7, CardValue.SEVEN.toInt())
+        assertEquals(8, CardValue.EIGHT.toInt())
+        assertEquals(9, CardValue.NINE.toInt())
+        assertEquals(10, CardValue.TEN.toInt())
+        assertEquals(10, CardValue.JACK.toInt())
+        assertEquals(10, CardValue.QUEEN.toInt())
+        assertEquals(-1, CardValue.KING.toInt())
+        assertEquals(1, CardValue.ACE.toInt())
+
+    }
 }
