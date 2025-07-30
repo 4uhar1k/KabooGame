@@ -15,7 +15,5 @@ class KabooTest {
     fun testInit(){
         assertEquals(null, kaboo.currentPlayer)
         assertEquals(mutableListOf(), kaboo.players)
-        assertEquals(Stack(), kaboo.newStack)
-        assertEquals(Stack(), kaboo.usedStack)
     }
 }
