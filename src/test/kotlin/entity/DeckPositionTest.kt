@@ -1,5 +1,9 @@
 package entity
 import kotlin.test.*
+
+/**
+ * [DeckPositionTest] is created for testing [DeckPosition]
+ */
 class DeckPositionTest {
 
     /**

@@ -3,6 +3,9 @@ package entity
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+/**
+ * [PlayerTest] is created for testing [Player]
+ */
 class PlayerTest {
     private val player1 = Player("Vladimir")
     private val player2 = Player(knocked = false, viewedCards = false)
