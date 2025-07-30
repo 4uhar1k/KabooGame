@@ -18,7 +18,6 @@ class CardTest {
     /**
      * tests, how will the card's value be converted to string
      */
-
     @Test
     fun testToString() {
         assertEquals(spadesChar + "A", aceOfSpades.toString())
@@ -60,6 +59,5 @@ class CardTest {
         assertEquals(10, CardValue.QUEEN.toInt())
         assertEquals(-1, CardValue.KING.toInt())
         assertEquals(1, CardValue.ACE.toInt())
-
     }
 }

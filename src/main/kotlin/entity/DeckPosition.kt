@@ -1,5 +1,9 @@
 package entity
 
+/**
+ * Enum to distinguish between player's deck positions
+ * Each player's got 4 card on his deck (2x2)
+ */
 enum class DeckPosition {
     TOP_LEFT,
     TOP_RIGHT,

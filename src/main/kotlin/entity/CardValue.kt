@@ -48,7 +48,6 @@ enum class CardValue {
     /**
      * provide an integer value (points) for each CardValue
      */
-
     fun toInt() = when(this) {
         TWO -> 2
         THREE -> 3
