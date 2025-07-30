@@ -1,6 +1,7 @@
-package service
-import entity.Player
-import kotlin.test.*
+package entity
+
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class PlayerTest {
     private val player1 = Player("Vladimir", false, false)

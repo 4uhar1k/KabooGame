@@ -1,8 +1,7 @@
-package service
-import entity.Card
-import entity.CardSuit
-import entity.CardValue
-import kotlin.test.*
+package entity
+
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class CardTest {
     private val aceOfSpades = Card(CardSuit.SPADES, CardValue.ACE)
