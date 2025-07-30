@@ -4,7 +4,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class PlayerTest {
-    private val player1 = Player("Vladimir", false, false)
+    private val player1 = Player("Vladimir")
     private val player2 = Player(knocked = false, viewedCards = false)
 
     /**
@@ -16,7 +16,7 @@ class PlayerTest {
         assertEquals("Player", player2.name)
     }
 
-    /**
+     /**
      * tests if the player will be initialized correctly
      */
     @Test

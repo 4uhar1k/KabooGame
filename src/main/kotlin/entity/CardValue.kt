@@ -62,11 +62,4 @@ enum class CardValue {
         KING -> -1
         ACE -> 1
     }
-
-
-
-
-
-
-
 }
