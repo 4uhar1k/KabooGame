@@ -4,23 +4,43 @@ import tools.aqua.bgw.util.Stack
 import java.util.Collections.addAll
 import kotlin.IllegalStateException
 
+/**
+ * [GameService] is an entity, which provides all logic, performed by system during the game
+ * @param rootService The [RootService] instance to access the other service methods and entity layer
+ */
 class GameService (private val rootService: RootService): AbstractRefreshingService() {
-
     var player1 = Player()
     var player2 = Player()
+
+    /**
+     * [startGame] is a method, which is needed to start the game
+     * It creates new game, adds both player, defines the current player, shuffles new stack of cards
+     * and give start cards for players
+     */
     fun startGame(){
         val kaboo = Kaboo()
         rootService.currentGame = kaboo
-        kaboo.currentPlayer = player1
         kaboo.players.add(player1)
         kaboo.players.add(player2)
+        kaboo.currentPlayer = player1
         kaboo.newStack = createDeck()
         giveStartCards()
     }
+
+    /**
+     * [addPlayers] is a method, which accepts names of players and adds them to the game
+     * @param namePlayer1 is a name of first player
+     * @param namePlayer2 is a name of other player
+     */
     fun addPlayers(namePlayer1: String, namePlayer2: String){
         player1 = Player(namePlayer1)
         player2 = Player(namePlayer2)
     }
+    /**
+     * [createDeck] is a method, which shuffles all our cards into the new stack
+     * we use [index/13] for CardSuit because we got four type of suits (52/13=4)
+     * we use [index%13] for CardValue because we got 12 values of cards
+     */
     fun createDeck() : Stack<Card> {
         val randomListOfCards = List(52){ index ->
             Card(
@@ -30,6 +50,11 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
         }.shuffled().toMutableList()
         return Stack<Card>().apply { addAll(randomListOfCards) }
     }
+
+    /**
+     * [giveStartCards] is a method, which gives players their start cards
+     * @exception IllegalStateException is thrown, if the game is not started (kaboo == null)
+     */
     fun giveStartCards(){
         val kaboo = rootService.currentGame
         if (kaboo == null){
@@ -44,6 +69,14 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
             kaboo.newStack.pop()
         }
     }
+
+    /**
+     * [gameMove] is a method, which is responsible for game logic
+     * if current player has already knocked, and it's his turn or the stack of new cards is empty,
+     * then we call [endGame] method. If nobody has not knocked yet, current player has to choose
+     * between 3 interactions: to knock, to pick card from new or from used stack.
+     * @exception IllegalStateException is thrown, if the game is not started (kaboo == null)
+     */
     fun gameMove(){
         val kaboo = rootService.currentGame
         if (kaboo == null){
@@ -55,7 +88,7 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
         else
             otherPlayer = player1
 
-        if (kaboo.currentPlayer?.knocked == true){
+        if (kaboo.currentPlayer?.knocked == true || kaboo.newStack.size == 0){
             endGame()
         }
         if (otherPlayer.knocked == true){
@@ -63,19 +96,19 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
         }
         else
         {
-            val knocked : Boolean = false // should be updated by interactions in gui
-            if (knocked) {
+            val playerWantsToKnock : Boolean = false // should be updated by interactions in gui
+            if (playerWantsToKnock) {
                 rootService.playerService.knock()
-
             }
-
         }
-
         val used: Boolean = false // should be updated by interactions in gui
         rootService.playerService.drawCard(used)
     }
 
-
+    /**
+     * [endTurn] is a method, which ends the current player's turn and starts the next one for another player
+     * @exception IllegalStateException is thrown, if the game is not started (kaboo == null)
+     */
     fun endTurn(){
         val kaboo = rootService.currentGame
         if (kaboo == null){
@@ -88,6 +121,12 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
         onAllRefreshables { refreshAfterEachTurn() }
     }
 
+    /**
+     * [endGame] is a method, which ends the game
+     * It calculates points of each player's deck and returns winner's name
+     * @return The method returns the name of a player, who got fewer points. If players got equal points, "Draw" is returned.
+     * @exception IllegalStateException is thrown, if the game is not started (kaboo == null)
+     */
     fun endGame(): String{
         val kaboo = rootService.currentGame
         if (kaboo == null){
