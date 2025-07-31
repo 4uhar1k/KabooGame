@@ -117,7 +117,7 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
         val cardToChange : Card = currentPlayer.deck[ownPosition.toInt()]
         currentPlayer.deck[ownPosition.toInt()] = otherPlayer.deck[otherPosition.toInt()]
         otherPlayer.deck[otherPosition.toInt()] = cardToChange
-        onAllRefreshables { refreshAfterSwapOther() }
+        onAllRefreshables { refreshAfterSwapOther(ownPosition, otherPosition) }
     }
 
     /**
@@ -267,7 +267,7 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
         if (currentPlayer.ownSelected != DeckPosition.NOT_SELECTED && currentPlayer.otherSelected != DeckPosition.NOT_SELECTED){
             if (currentPlayer.hand?.value == CardValue.JACK){
                 swapOther(currentPlayer.ownSelected, currentPlayer.otherSelected)
-                onAllRefreshables { refreshAfterSwapOther() }
+                onAllRefreshables { refreshAfterSwapOther(currentPlayer.ownSelected, currentPlayer.otherSelected) }
             }
             else if (currentPlayer.hand?.value == CardValue.QUEEN){
                 onAllRefreshables { refreshAfterChooseCard() }

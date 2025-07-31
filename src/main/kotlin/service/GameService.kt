@@ -74,12 +74,13 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
     /**
      * [gameMove] is a method, which is responsible for game logic
      * if current player has already knocked, and it's his turn or the stack of new cards is empty,
-     * then we call [endGame] method. If nobody has not knocked yet, current player has to choose
+     * then we call [endGame] method. If nobody has knocked yet, current player has to choose
      * between 3 interactions: to knock, to pick card from new or from used stack.
      * @exception IllegalStateException is thrown, if the game is not started (kaboo == null)
      */
     fun gameMove(){
         val kaboo = rootService.currentGame
+        val playerWantsToKnock = false
         if (kaboo == null){
             throw IllegalStateException("Game not started yet")
         }
@@ -97,13 +98,14 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
         }
         else
         {
-            val playerWantsToKnock = false // should be updated by interactions in gui
+             // should be updated by interactions in gui
             if (playerWantsToKnock) {
                 rootService.playerService.knock()
             }
         }
         val used = false // should be updated by interactions in gui
         rootService.playerService.drawCard(used)
+        onAllRefreshables { refreshAfterGameMove(!playerWantsToKnock, !used) }
     }
 
     /**
