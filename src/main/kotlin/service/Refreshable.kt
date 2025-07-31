@@ -1,5 +1,7 @@
 package service
 
+import entity.*
+
 /**
  * This interface provides a mechanism for the service layer classes to communicate
  * (usually to the GUI classes) that certain changes have been made to the entity
@@ -10,4 +12,44 @@ package service
  *
  * @see AbstractRefreshingService
  */
-interface Refreshable
+interface Refreshable{
+    fun refreshAfterGameStart(){
+
+    }
+    fun refreshAfterAddPlayers(){
+
+    }
+    fun refreshAfterEndGame(){
+
+    }
+    fun refreshAfterDraw(discardable: Boolean, usablePower: Boolean){
+
+    }
+    fun refreshAfterDiscard(){
+
+    }
+    fun refreshAfterSwapOther(){
+
+    }
+    fun refreshAfterSwapSelf(position: DeckPosition){
+
+    }
+    fun refreshAfterPeakCardPlayer(positionToPeak: DeckPosition, playerToPeak: Player){
+
+    }
+    fun refreshAfterEachTurn(){
+
+    }
+    fun refreshAfterKnock(){
+
+    }
+    fun refreshAfterGameMove(canKnock: Boolean, canTakeUsedCard: Boolean){
+
+    }
+    fun refreshAfterUsePower(highlightDeckPlayer1: Boolean, highlightDeckPlayer2: Boolean){
+
+    }
+    fun refreshAfterChooseCard(){
+
+    }
+}

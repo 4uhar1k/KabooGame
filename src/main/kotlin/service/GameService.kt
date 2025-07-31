@@ -44,14 +44,11 @@ class GameService (private val rootService: RootService){
         if (kaboo == null){
             throw IllegalStateException("Game not started yet")
         }
-
-
         var otherPlayer = Player()
         if (kaboo.currentPlayer == player1)
             otherPlayer = player2
         else
             otherPlayer = player1
-
 
         if (kaboo.currentPlayer?.knocked == true){
             endGame()
@@ -72,12 +69,13 @@ class GameService (private val rootService: RootService){
         }
 
     }
+
+
     fun endTurn(){
         val kaboo = rootService.currentGame
         if (kaboo == null){
             throw IllegalStateException("Game not started yet")
         }
-
         if (kaboo.currentPlayer == player1)
             kaboo.currentPlayer = player2
         else
@@ -102,6 +100,5 @@ class GameService (private val rootService: RootService){
             return player2.name
         else
             return "Draw"
-
     }
 }
