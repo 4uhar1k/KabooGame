@@ -15,6 +15,35 @@ class PlayerServiceTest {
         rootService.gameService.addPlayers("Vladimir", "Player2")
     }
 
+    @Test
+    fun testIfNull(){
+        rootService.currentGame = null
+        assertFails{
+            rootService.playerService.drawCard(false)
+        }
+        assertFails{
+            rootService.playerService.discard()
+        }
+        assertFails{
+            rootService.playerService.swapSelf(DeckPosition.NOT_SELECTED)
+        }
+        assertFails{
+            rootService.playerService.swapOther(DeckPosition.NOT_SELECTED, DeckPosition.NOT_SELECTED)
+        }
+        assertFails{
+            rootService.playerService.usePower()
+        }
+        assertFails{
+            rootService.playerService.knock()
+        }
+        assertFails{
+            rootService.playerService.peakCardsFirstRound()
+        }
+        assertFails{
+            rootService.playerService.chooseCard(DeckPosition.NOT_SELECTED, rootService.currentGame!!.currentPlayer!!)
+        }
+    }
+
     /**
      * tests, if drawing cards from both new and used stacks works correctly
      */
@@ -140,7 +169,6 @@ class PlayerServiceTest {
     @Test
     fun testChooseCard(){
         var currentPlayer = rootService.currentGame!!.players[0]
-        var otherPlayer = rootService.currentGame!!.players[1]
 
         assertEquals(DeckPosition.NOT_SELECTED, currentPlayer.ownSelected )
         assertEquals(DeckPosition.NOT_SELECTED, currentPlayer.otherSelected)
@@ -152,7 +180,7 @@ class PlayerServiceTest {
 
         rootService.gameService.addPlayers("Vladimir", "Player2")
         currentPlayer = rootService.currentGame!!.players[0]
-        otherPlayer = rootService.currentGame!!.players[1]
+        var otherPlayer: Player = rootService.currentGame!!.players[1]
         rootService.playerService.chooseCard(DeckPosition.TOP_LEFT, otherPlayer)
         assertEquals(DeckPosition.NOT_SELECTED, currentPlayer.ownSelected )
         assertEquals(DeckPosition.TOP_LEFT, currentPlayer.otherSelected)

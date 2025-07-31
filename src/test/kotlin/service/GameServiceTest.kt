@@ -26,10 +26,17 @@ class GameServiceTest {
         rootService.currentGame = null
         assertFails{
             rootService.gameService.giveStartCards()
+        }
+        assertFails{
             rootService.gameService.gameMove()
+        }
+        assertFails{
             rootService.gameService.endTurn()
+        }
+        assertFails{
             rootService.gameService.endGame()
         }
+        rootService.gameService.addPlayers("Vladimir", "Player2")
         assertNotNull(rootService.currentGame)
         assertEquals(2, rootService.currentGame?.players?.size)
         assertEquals(Player(name="Vladimir", viewedCards = true), rootService.currentGame?.currentPlayer)
