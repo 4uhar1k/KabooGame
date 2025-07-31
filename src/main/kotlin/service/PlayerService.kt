@@ -115,20 +115,24 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
         if (hand.value == CardValue.SEVEN || hand.value == CardValue.EIGHT){
             onAllRefreshables { refreshAfterUsePower(true,false) }
             var selectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
+            chooseCard(selectedPosition, currentPlayer)
             peakCardPlayer(selectedPosition, currentPlayer)
             onAllRefreshables { refreshAfterPeakCardPlayer(selectedPosition, currentPlayer) }
         }
         else if (hand.value == CardValue.NINE || hand.value == CardValue.TEN){
             onAllRefreshables { refreshAfterUsePower(false,true) }
             var selectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
+            chooseCard(selectedPosition, otherPlayer)
             peakCardPlayer(selectedPosition, otherPlayer)
             onAllRefreshables { refreshAfterPeakCardPlayer(selectedPosition, otherPlayer) }
         }
         else if (hand.value == CardValue.JACK){
             var ownSelectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
             var otherSelectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
-            swapOther(ownSelectedPosition, otherSelectedPosition)
-            onAllRefreshables { refreshAfterSwapOther() }
+            chooseCard(ownSelectedPosition, currentPlayer)
+            peakCardPlayer(ownSelectedPosition, currentPlayer)
+            chooseCard(otherSelectedPosition, otherPlayer)
+            peakCardPlayer(otherSelectedPosition, otherPlayer)
         }
     }
     fun knock(){
@@ -179,11 +183,14 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
             currentPlayer.otherSelected = chosenCardPosition
         }
 
-        if (currentPlayer.hand?.value == CardValue.JACK && currentPlayer.ownSelected != DeckPosition.NOT_SELECTED && currentPlayer.otherSelected != DeckPosition.NOT_SELECTED){
-            swapOther(currentPlayer.ownSelected, currentPlayer.otherSelected)
-        }
-        else if (currentPlayer.hand?.value == CardValue.QUEEN){
-            onAllRefreshables { refreshAfterChooseCard() }
+        if (currentPlayer.ownSelected != DeckPosition.NOT_SELECTED && currentPlayer.otherSelected != DeckPosition.NOT_SELECTED){
+            if (currentPlayer.hand?.value == CardValue.JACK){
+                swapOther(currentPlayer.ownSelected, currentPlayer.otherSelected)
+                onAllRefreshables { refreshAfterSwapOther() }
+            }
+            else if (currentPlayer.hand?.value == CardValue.QUEEN){
+                onAllRefreshables { refreshAfterChooseCard() }
+            }
         }
 
     }
