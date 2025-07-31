@@ -23,6 +23,13 @@ class GameServiceTest {
      */
     @Test
     fun testStartGame(){
+        rootService.currentGame = null
+        assertFails{
+            rootService.gameService.giveStartCards()
+            rootService.gameService.gameMove()
+            rootService.gameService.endTurn()
+            rootService.gameService.endGame()
+        }
         assertNotNull(rootService.currentGame)
         assertEquals(2, rootService.currentGame?.players?.size)
         assertEquals(Player(name="Vladimir", viewedCards = true), rootService.currentGame?.currentPlayer)
