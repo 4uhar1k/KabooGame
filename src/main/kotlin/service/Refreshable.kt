@@ -16,7 +16,7 @@ interface Refreshable{
     /**
      * The method switches from the start game screen to the normal game screen.
      */
-    fun refreshAfterGameStart(){
+    fun refreshAfterStartGame(){
 
     }
 

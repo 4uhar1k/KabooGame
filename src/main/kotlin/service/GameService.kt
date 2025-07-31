@@ -11,20 +11,21 @@ import kotlin.IllegalStateException
 class GameService (private val rootService: RootService): AbstractRefreshingService() {
     var player1 = Player()
     var player2 = Player()
-
+    public var kaboo = Kaboo()
     /**
      * [startGame] is a method, which is needed to start the game
      * It creates new game, adds both player, defines the current player, shuffles new stack of cards
      * and give start cards for players
      */
     fun startGame(){
-        val kaboo = Kaboo()
+        kaboo = Kaboo()
         rootService.currentGame = kaboo
         kaboo.players.add(player1)
         kaboo.players.add(player2)
         kaboo.currentPlayer = player1
         kaboo.newStack = createDeck()
         giveStartCards()
+        onAllRefreshables { refreshAfterStartGame() }
         rootService.playerService.peakCardsFirstRound()
     }
 
@@ -49,7 +50,11 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
                 CardValue.entries[index % 13]
             )
         }.shuffled().toMutableList()
-        return Stack<Card>().apply { addAll(randomListOfCards) }
+        var deck = Stack<Card>()
+        for (card in randomListOfCards) {
+            deck.push(card)  // Use push instead of add/addAll
+        }
+        return deck//Stack<Card>().apply { addAll(randomListOfCards) }
     }
 
     /**
@@ -58,16 +63,20 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
      */
     fun giveStartCards(){
         val kaboo = rootService.currentGame
-        if (kaboo == null){
+        if (kaboo == null) {
             throw IllegalStateException("Game not started yet")
         }
-        for (i in 0..3){
-            player1.deck.add(kaboo.newStack.peek())
-            kaboo.newStack.pop()
+
+        if (kaboo.newStack.size < 8) {
+            throw IllegalStateException("Not enough cards in the stack to deal starting cards: ${kaboo.newStack.size}")
         }
         for (i in 0..3){
-            player2.deck.add(kaboo.newStack.peek())
-            kaboo.newStack.pop()
+            player1.deck.add(kaboo.newStack.pop())
+            //kaboo.newStack.pop()
+        }
+        for (i in 0..3){
+            player2.deck.add(kaboo.newStack.pop())
+            //kaboo.newStack.pop()
         }
     }
 

@@ -7,7 +7,7 @@ import entity.*
  * @param rootService The [RootService] instance to access the other service methods and entity layer
  */
 class PlayerService(private val rootService: RootService): AbstractRefreshingService() {
-    val kaboo = rootService.currentGame
+
 
     /**
      * This method allows the player to take the card from either the draw pile or the discard pile
@@ -15,6 +15,7 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
      * @exception IllegalStateException Is thrown if the game is not started (kaboo == null)
      */
     fun drawCard(used: Boolean){
+        val kaboo = rootService.currentGame
         var usablePower: Boolean = false
         val listOfUsablePowers = mutableListOf<String>("QUEEN", "JACK", "TEN", "NINE", "EIGHT", "SEVEN")
         if (kaboo == null){
@@ -42,6 +43,7 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
      *
      */
     fun discard(){
+        val kaboo = rootService.currentGame
         if (kaboo == null){
             throw IllegalStateException("Game not started yet")
         }
@@ -67,6 +69,7 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
      * if there is no current player or if current player got no hand card
      */
     fun swapSelf(position: DeckPosition){
+        val kaboo = rootService.currentGame
         if (kaboo == null) {
             throw IllegalStateException("Game not started yet")
         }
@@ -94,6 +97,7 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
      * if there is no current player or if current player got no hand card
      */
     fun swapOther(ownPosition: DeckPosition, otherPosition: DeckPosition){
+        val kaboo = rootService.currentGame
         if (kaboo == null) {
             throw IllegalStateException("Game not started yet")
         }
@@ -133,6 +137,7 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
      * player's hand card is not a power card
      */
     fun usePower(){
+        val kaboo = rootService.currentGame
         if (kaboo == null){
             throw IllegalStateException("Game not started yet")
         }
@@ -190,6 +195,7 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
      * or if there is no current player
      */
     fun knock(){
+        val kaboo = rootService.currentGame
         if (kaboo == null){
             throw IllegalStateException("Game not started yet")
         }
@@ -218,6 +224,7 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
      * if there is no current player or if the player has already viewed his bottom cards
      */
     fun peakCardsFirstRound(){
+        val kaboo = rootService.currentGame
         if (kaboo == null){
             throw IllegalStateException("Game not started yet")
         }
@@ -248,6 +255,7 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
      * or if there is no current player
      */
     fun chooseCard(chosenCardPosition: DeckPosition, cardOfPlayer: Player){
+        val kaboo = rootService.currentGame
         if (kaboo == null){
             throw IllegalStateException("Game not started yet")
         }
