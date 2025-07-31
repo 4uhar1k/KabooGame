@@ -8,9 +8,9 @@ import tools.aqua.bgw.util.Stack
  * @property newStack The stack of new cards, players can draw a card from it
  * @property usedStack The stack of used cards, players can draw a card from it too
  */
-class Kaboo {
-    val currentPlayer: Player? = null
-    val players : MutableList<Player> = mutableListOf()
-    val newStack : Stack<Card> = Stack()
-    val usedStack : Stack<Card> = Stack()
+class Kaboo () {
+    var currentPlayer: Player? = null
+    var players : MutableList<Player> = mutableListOf()
+    var newStack : Stack<Card> = Stack()
+    var usedStack : Stack<Card> = Stack()
 }

@@ -13,5 +13,5 @@ data class Player(val name: String? = "Player", var knocked: Boolean? = false, v
     val hand : Card? = null
     val ownSelected : Card? = null
     val otherSelected : Card? = null
-    val deck : MutableList<Card> = mutableListOf()
+    var deck : MutableList<Card> = mutableListOf()
 }
