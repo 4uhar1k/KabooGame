@@ -207,6 +207,13 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
         {
             throw IllegalStateException("There is no current player in this game")
         }
+        var otherPlayer = Player()
+        if (kaboo.currentPlayer == kaboo.players[0])
+            otherPlayer = kaboo.players[1]
+        else
+            otherPlayer = kaboo.players[0]
+        if (otherPlayer.knocked)
+            throw IllegalStateException("Other player has already knocked")
         currentPlayer.knocked = true
         onAllRefreshables { refreshAfterKnock() }
     }

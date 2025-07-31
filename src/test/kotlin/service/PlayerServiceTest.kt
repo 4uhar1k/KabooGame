@@ -78,4 +78,92 @@ class PlayerServiceTest {
         assertEquals(prevOtherCard, rootService.currentGame!!.players[0].deck[DeckPosition.TOP_LEFT.toInt()])
     }
 
+    /**
+     * tests, if the game correctly chooses power type for each power card
+     * and correctly implements it
+     */
+    @Test
+    fun testUsePower(){
+        assertFails { rootService.currentGame!!.currentPlayer!!.hand = Card(CardSuit.DIAMONDS, CardValue.TWO)
+            rootService.playerService.usePower() }
+
+        rootService.currentGame!!.currentPlayer!!.hand = Card(CardSuit.DIAMONDS, CardValue.SEVEN)
+        rootService.playerService.usePower()
+        assertNotEquals(DeckPosition.NOT_SELECTED, rootService.currentGame!!.currentPlayer!!.ownSelected)
+        assertEquals(DeckPosition.NOT_SELECTED, rootService.currentGame!!.currentPlayer!!.otherSelected)
+        rootService.gameService.endGame()
+
+        rootService.gameService.addPlayers("Vladimir", "Player2")
+        rootService.currentGame!!.currentPlayer!!.hand = Card(CardSuit.DIAMONDS, CardValue.NINE)
+        rootService.playerService.usePower()
+        assertEquals(DeckPosition.NOT_SELECTED, rootService.currentGame!!.currentPlayer!!.ownSelected)
+        assertNotEquals(DeckPosition.NOT_SELECTED, rootService.currentGame!!.currentPlayer!!.otherSelected)
+        rootService.gameService.endGame()
+
+        rootService.gameService.addPlayers("Vladimir", "Player2")
+        rootService.currentGame!!.currentPlayer!!.hand = Card(CardSuit.DIAMONDS, CardValue.JACK)
+        rootService.playerService.usePower()
+        assertNotEquals(DeckPosition.NOT_SELECTED, rootService.currentGame!!.currentPlayer!!.ownSelected)
+        assertNotEquals(DeckPosition.NOT_SELECTED, rootService.currentGame!!.currentPlayer!!.otherSelected)
+    }
+
+    /**
+     * tests, if a player can knock, while the other one already has,
+     * and if knock() works correctly
+     */
+    @Test
+    fun testKnock(){
+        rootService.currentGame!!.players[1].knocked = true
+        assertFails { rootService.playerService.knock() }
+        rootService.currentGame!!.players[1].knocked = false
+        rootService.playerService.knock()
+        assertEquals(true, rootService.currentGame!!.currentPlayer!!.knocked)
+    }
+
+    /**
+     * tests, if a player can view bottom cards multiple times,
+     * and if the method itself works correctly
+     */
+    @Test
+    fun testPeakCardsFirstRound(){
+        rootService.currentGame!!.currentPlayer!!.viewedCards = true
+        assertFails{ rootService.playerService.peakCardsFirstRound()}
+        rootService.currentGame!!.currentPlayer!!.viewedCards = false
+        rootService.playerService.peakCardsFirstRound()
+        assertEquals(true, rootService.currentGame!!.currentPlayer!!.viewedCards)
+
+    }
+
+    /**
+     * tests, if the game works correctly by choosing the cards
+     */
+    @Test
+    fun testChooseCard(){
+        var currentPlayer = rootService.currentGame!!.players[0]
+        var otherPlayer = rootService.currentGame!!.players[1]
+
+        assertEquals(DeckPosition.NOT_SELECTED, currentPlayer.ownSelected )
+        assertEquals(DeckPosition.NOT_SELECTED, currentPlayer.otherSelected)
+
+        rootService.playerService.chooseCard(DeckPosition.TOP_LEFT, currentPlayer)
+        assertEquals(DeckPosition.TOP_LEFT, currentPlayer.ownSelected )
+        assertEquals(DeckPosition.NOT_SELECTED, currentPlayer.otherSelected)
+        rootService.gameService.endGame()
+
+        rootService.gameService.addPlayers("Vladimir", "Player2")
+        currentPlayer = rootService.currentGame!!.players[0]
+        otherPlayer = rootService.currentGame!!.players[1]
+        rootService.playerService.chooseCard(DeckPosition.TOP_LEFT, otherPlayer)
+        assertEquals(DeckPosition.NOT_SELECTED, currentPlayer.ownSelected )
+        assertEquals(DeckPosition.TOP_LEFT, currentPlayer.otherSelected)
+        rootService.gameService.endGame()
+
+        rootService.gameService.addPlayers("Vladimir", "Player2")
+        currentPlayer = rootService.currentGame!!.players[0]
+        otherPlayer = rootService.currentGame!!.players[1]
+        rootService.playerService.chooseCard(DeckPosition.TOP_LEFT, currentPlayer)
+        rootService.playerService.chooseCard(DeckPosition.TOP_LEFT, otherPlayer)
+        assertEquals(DeckPosition.TOP_LEFT, currentPlayer.ownSelected )
+        assertEquals(DeckPosition.TOP_LEFT, currentPlayer.otherSelected)
+    }
 }
