@@ -97,12 +97,12 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
         }
         else
         {
-            val playerWantsToKnock : Boolean = false // should be updated by interactions in gui
+            val playerWantsToKnock = false // should be updated by interactions in gui
             if (playerWantsToKnock) {
                 rootService.playerService.knock()
             }
         }
-        val used: Boolean = false // should be updated by interactions in gui
+        val used = false // should be updated by interactions in gui
         rootService.playerService.drawCard(used)
     }
 

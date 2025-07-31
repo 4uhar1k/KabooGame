@@ -2,9 +2,18 @@ package service
 import entity.*
 
 
+/**
+ * [PlayerService] is an entity, which provides all logic, performed by players during the game
+ * @param rootService The [RootService] instance to access the other service methods and entity layer
+ */
 class PlayerService(private val rootService: RootService): AbstractRefreshingService() {
     val kaboo = rootService.currentGame
 
+    /**
+     * This method allows the player to take the card from either the draw pile or the discard pile
+     * @param used the Boolean parameter, that shows whether the card should be taken from draw (false) or discard pile(true).
+     * @exception IllegalStateException Is thrown if the game is not started (kaboo == null)
+     */
     fun drawCard(used: Boolean){
         var usablePower: Boolean = false
         val listOfUsablePowers = mutableListOf<String>("QUEEN", "JACK", "TEN", "NINE", "EIGHT", "SEVEN")
@@ -25,6 +34,13 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
         }
         onAllRefreshables { refreshAfterDraw(!used, usablePower) }
     }
+
+    /**
+     * The method draws the card in player's hand into the discard pile
+     * @exception IllegalStateException Is thrown if the game is not started (kaboo == null),
+     * if there is no current player or if current player got no hand card
+     *
+     */
     fun discard(){
         if (kaboo == null){
             throw IllegalStateException("Game not started yet")
@@ -42,10 +58,14 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
 
         kaboo.usedStack.push(hand)
         currentPlayer.hand = null
-
-
-
     }
+
+    /**
+     * The Method gives the Player a way to swap the Card in his hand with one Card in his deck
+     * @param position chosen Position in currentPlayer Deck to swap Card in hand with
+     * @exception IllegalStateException Is thrown if the game is not started (kaboo == null),
+     * if there is no current player or if current player got no hand card
+     */
     fun swapSelf(position: DeckPosition){
         if (kaboo == null) {
             throw IllegalStateException("Game not started yet")
@@ -65,6 +85,14 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
         currentPlayer.hand = null
         onAllRefreshables { refreshAfterSwapSelf(position) }
     }
+
+    /**
+     * The Method swaps the Card from currentPlayer deck at ownPosition with the Card from otherPlayer at otherPosition.
+     * @param ownPosition position in currentPlayer Deck to swap Cards with
+     * @param otherPosition position in otherPlayer Deck to swap Cards with
+     * @exception IllegalStateException Is thrown if the game is not started (kaboo == null),
+     * if there is no current player or if current player got no hand card
+     */
     fun swapOther(ownPosition: DeckPosition, otherPosition: DeckPosition){
         if (kaboo == null) {
             throw IllegalStateException("Game not started yet")
@@ -90,8 +118,20 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
         currentPlayer.deck[ownPosition.toInt()] = otherPlayer.deck[otherPosition.toInt()]
         otherPlayer.deck[otherPosition.toInt()] = cardToChange
         onAllRefreshables { refreshAfterSwapOther() }
-
     }
+
+    /**
+     * The method is called when a player draws a power card and wants to use its effect.
+     * The power card must have been drawn directly from the draw pile, without being swapped with another card.
+     * Depending on the value of the drawn card, a specific special effect is triggered:
+     * Jack: Blindly swap with another player's card
+     * Queen: View and/or swap own and opponent's cards
+     * 7 or 8: View one of your own cards
+     * 9 or 10: View one of the opponent’s cards After the effect has been executed, the power card is placed face-up on the discard pile.
+     * @exception IllegalStateException Is thrown if the game is not started (kaboo == null),
+     * if there is no current player or if current player got no hand card, or if
+     * player's hand card is not a power card
+     */
     fun usePower(){
         if (kaboo == null){
             throw IllegalStateException("Game not started yet")
@@ -126,15 +166,29 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
             peakCardPlayer(selectedPosition, otherPlayer)
             onAllRefreshables { refreshAfterPeakCardPlayer(selectedPosition, otherPlayer) }
         }
-        else if (hand.value == CardValue.JACK){
+        else if (hand.value == CardValue.JACK || hand.value == CardValue.QUEEN){
+            onAllRefreshables { refreshAfterUsePower(true,false) }
             var ownSelectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
-            var otherSelectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
             chooseCard(ownSelectedPosition, currentPlayer)
             peakCardPlayer(ownSelectedPosition, currentPlayer)
+            onAllRefreshables { refreshAfterUsePower(false,true) }
+            var otherSelectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
             chooseCard(otherSelectedPosition, otherPlayer)
             peakCardPlayer(otherSelectedPosition, otherPlayer)
         }
+        else
+        {
+            throw IllegalStateException("Hand card is not a power card")
+        }
     }
+
+    /**
+     * This method is called after a player knocks. Once a player has knocked,
+     * the other player is no longer allowed to knock and only has one final turn.
+     * After that, the game ends automatically.
+     * @exception IllegalStateException Is thrown if the game is not started (kaboo == null)
+     * or if there is no current player
+     */
     fun knock(){
         if (kaboo == null){
             throw IllegalStateException("Game not started yet")
@@ -147,9 +201,22 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
         currentPlayer.knocked = true
         onAllRefreshables { refreshAfterKnock() }
     }
+
+    /**
+     * The method checks the parameters and instructs the GUI
+     * to reveal the card at the specified position in the deck of the given player.
+     * @param positionToPeak a DeckPosition indicating which position in the deck of playerToPeak should be revealed.
+     * @param playerToPeak a Player whose card at position positionToPeak in their deck should be revealed.
+     */
     fun peakCardPlayer(positionToPeak: DeckPosition, playerToPeak: Player){
         onAllRefreshables { refreshAfterPeakCardPlayer(positionToPeak, playerToPeak) }
     }
+
+    /**
+     * The method calls the method peakCardPlayer twice using indices for the bottom two cards and the current player as arguments.
+     * @exception IllegalStateException Is thrown if the game is not started (kaboo == null),
+     * if there is no current player or if the player has already viewed his bottom cards
+     */
     fun peakCardsFirstRound(){
         if (kaboo == null){
             throw IllegalStateException("Game not started yet")
@@ -160,12 +227,26 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
             throw IllegalStateException("There is no current player in this game")
         }
         if (!currentPlayer.viewedCards){
+            peakCardPlayer(DeckPosition.BOTTOM_LEFT, currentPlayer)
+            peakCardPlayer(DeckPosition.BOTTOM_RIGHT, currentPlayer)
             currentPlayer.viewedCards = true
         }
         else {
             throw IllegalStateException("Player has already viewed cards")
         }
     }
+
+    /**
+     * This method is called, whenever a player chooses a card to swap when having a jack or queen.
+     * It stores the chosen card in either the ownSelected or the otherSelected variable of the current player,
+     * depending on the cardOfPlayer. When both variables (ownSelected and otherSelected) are set and the current hand card is a Queen
+     * it calls the refreshAfterChooseCard to show the swap button.
+     * If the current hand card is a Jack, it calls the swapOther() method to swap the selected cards immediately.
+     * @param chosenCardPosition The position of the card in the Deck that the player has chosen to swap.
+     * @param cardOfPlayer A Player that is part of the game.
+     * @exception IllegalStateException Is thrown if the game is not started (kaboo == null)
+     * or if there is no current player
+     */
     fun chooseCard(chosenCardPosition: DeckPosition, cardOfPlayer: Player){
         if (kaboo == null){
             throw IllegalStateException("Game not started yet")
