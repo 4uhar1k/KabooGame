@@ -11,7 +11,7 @@ package entity
  */
 data class Player(val name: String = "Player", var knocked: Boolean = false, var viewedCards: Boolean = false) {
     var hand : Card? = null
-    var ownSelected : DeckPosition = DeckPosition.TOP_LEFT
-    var otherSelected : DeckPosition = DeckPosition.TOP_LEFT
+    var ownSelected : DeckPosition = DeckPosition.NOT_SELECTED
+    var otherSelected : DeckPosition = DeckPosition.NOT_SELECTED
     var deck : MutableList<Card> = mutableListOf()
 }

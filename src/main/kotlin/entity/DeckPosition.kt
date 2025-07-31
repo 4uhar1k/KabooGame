@@ -9,6 +9,7 @@ enum class DeckPosition {
     TOP_RIGHT,
     BOTTOM_LEFT,
     BOTTOM_RIGHT,
+    NOT_SELECTED
     ;
 
     /**
@@ -19,6 +20,7 @@ enum class DeckPosition {
         TOP_RIGHT -> 1
         BOTTOM_LEFT -> 2
         BOTTOM_RIGHT -> 3
+        NOT_SELECTED -> -1
     }
 }
 

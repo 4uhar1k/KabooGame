@@ -178,7 +178,8 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
         else {
             currentPlayer.otherSelected = chosenCardPosition
         }
-        if (currentPlayer.hand?.value == CardValue.JACK){
+
+        if (currentPlayer.hand?.value == CardValue.JACK && currentPlayer.ownSelected != DeckPosition.NOT_SELECTED && currentPlayer.otherSelected != DeckPosition.NOT_SELECTED){
             swapOther(currentPlayer.ownSelected, currentPlayer.otherSelected)
         }
         else if (currentPlayer.hand?.value == CardValue.QUEEN){

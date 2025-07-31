@@ -28,8 +28,8 @@ class PlayerTest {
         assertEquals(false, player1.knocked)
         assertEquals(false, player1.viewedCards)
         assertEquals(null, player1.hand)
-        assertEquals(DeckPosition.TOP_LEFT, player1.ownSelected)
-        assertEquals(DeckPosition.TOP_LEFT, player1.otherSelected)
+        assertEquals(DeckPosition.NOT_SELECTED, player1.ownSelected)
+        assertEquals(DeckPosition.NOT_SELECTED, player1.otherSelected)
         assertEquals(mutableListOf(), player1.deck)
     }
 }
