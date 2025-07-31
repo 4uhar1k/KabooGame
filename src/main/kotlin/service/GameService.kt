@@ -11,6 +11,7 @@ import kotlin.IllegalStateException
 class GameService (private val rootService: RootService): AbstractRefreshingService() {
     var player1 = Player()
     var player2 = Player()
+    var playerWantsToKnock = false // should be updated by interactions in gui
     public var kaboo = Kaboo()
     /**
      * [startGame] is a method, which is needed to start the game
@@ -20,9 +21,9 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
     fun startGame(){
         kaboo = Kaboo()
         rootService.currentGame = kaboo
+        kaboo.currentPlayer = player1
         kaboo.players.add(player1)
         kaboo.players.add(player2)
-        kaboo.currentPlayer = player1
         kaboo.newStack = createDeck()
         giveStartCards()
         onAllRefreshables { refreshAfterStartGame() }
@@ -38,6 +39,7 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
         player1 = Player(namePlayer1)
         player2 = Player(namePlayer2)
         onAllRefreshables { refreshAfterAddPlayers() }
+        startGame()
     }
     /**
      * [createDeck] is a method, which shuffles all our cards into the new stack
@@ -90,7 +92,7 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
      */
     fun gameMove(){
         val kaboo = rootService.currentGame
-        val playerWantsToKnock = false
+
         if (kaboo == null){
             throw IllegalStateException("Game not started yet")
         }
@@ -103,19 +105,16 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
         if (kaboo.currentPlayer?.knocked == true || kaboo.newStack.size == 0){
             endGame()
         }
-        if (otherPlayer.knocked){
-            //knocked not allowed anymore
+        if (!otherPlayer.knocked && playerWantsToKnock){
+            rootService.playerService.knock()
         }
         else
         {
-             // should be updated by interactions in gui
-            if (playerWantsToKnock) {
-                rootService.playerService.knock()
-            }
+            val used = false // should be updated by interactions in gui
+            rootService.playerService.drawCard(used)
+            onAllRefreshables { refreshAfterGameMove(!playerWantsToKnock, !used) }
         }
-        val used = false // should be updated by interactions in gui
-        rootService.playerService.drawCard(used)
-        onAllRefreshables { refreshAfterGameMove(!playerWantsToKnock, !used) }
+
     }
 
     /**
@@ -152,13 +151,14 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
             sum2 += player2.deck[i].value.toInt()
         }
         var winnerMessage: String
-        if (sum1 > sum2)
+        if (sum1 < sum2)
             winnerMessage = player1.name
-        else if (sum2 > sum1)
+        else if (sum2 < sum1)
             winnerMessage = player2.name
         else
             winnerMessage = "Draw"
         onAllRefreshables { refreshAfterEndGame(winnerMessage) }
+        rootService.currentGame = null
         return winnerMessage
     }
 }

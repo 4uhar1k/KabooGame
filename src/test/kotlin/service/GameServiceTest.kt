@@ -15,7 +15,7 @@ class GameServiceTest {
     @BeforeTest
     fun setUp(){
         rootService = RootService()
-        rootService.gameService.startGame()
+        rootService.gameService.addPlayers("Vladimir", "Player2")
     }
 
     /**
@@ -25,7 +25,7 @@ class GameServiceTest {
     fun testStartGame(){
         assertNotNull(rootService.currentGame)
         assertEquals(2, rootService.currentGame?.players?.size)
-        assertEquals(Player(viewedCards = true), rootService.currentGame?.currentPlayer)
+        assertEquals(Player(name="Vladimir", viewedCards = true), rootService.currentGame?.currentPlayer)
         assertNotNull( rootService.currentGame?.newStack)
         assertNotNull(rootService.currentGame?.usedStack)
         assertEquals(44, rootService.currentGame?.newStack?.size)
@@ -63,18 +63,71 @@ class GameServiceTest {
         }
     }
 
+    /**
+     * tests, if players are correctly added to the game
+     */
+    @Test
+    fun testAddPlayers(){
+        assertEquals("Vladimir", rootService.currentGame!!.players[0].name)
+        assertEquals("Player2", rootService.currentGame!!.players[1].name)
+    }
     @Test
     fun testGameMove(){
 
     }
 
+    /**
+     * tests, if currentPlayer will be changed correctly by the end of the turn
+     */
     @Test
     fun testEndTurn(){
-
+        val player1 = rootService.currentGame!!.players[0]
+        val player2 = rootService.currentGame!!.players[1]
+        rootService.gameService.endTurn()
+        assertEquals(player2, rootService.currentGame!!.currentPlayer)
+        rootService.gameService.endTurn()
+        assertEquals(player1, rootService.currentGame!!.currentPlayer)
     }
 
+    /**
+     * Tests, if endGame() chooses the winner correctly and if it ends the game correctly
+     */
     @Test
     fun testEndGame(){
+        val card1 : Card = Card(CardSuit.DIAMONDS, CardValue.QUEEN)
+        val card2 : Card = Card(CardSuit.DIAMONDS, CardValue.JACK)
+        val card3 : Card = Card(CardSuit.DIAMONDS, CardValue.TEN)
+        val card4 : Card = Card(CardSuit.DIAMONDS, CardValue.NINE)
+        val card5 : Card = Card(CardSuit.DIAMONDS, CardValue.EIGHT)
+        val card6 : Card = Card(CardSuit.DIAMONDS, CardValue.SEVEN)
+        val card7 : Card = Card(CardSuit.DIAMONDS, CardValue.ACE)
+        val card8 : Card = Card(CardSuit.DIAMONDS, CardValue.KING)
+        rootService.currentGame!!.players[0].deck = mutableListOf(card1, card2, card3, card4)
+        rootService.currentGame!!.players[1].deck = mutableListOf(card5, card6, card7, card8)
+        assertEquals(rootService.currentGame!!.players[1].name, rootService.gameService.endGame())
 
+        assertFails{
+            rootService.currentGame!!.players[1].deck = mutableListOf(card1, card2, card3, card4)
+            rootService.currentGame!!.players[0].deck = mutableListOf(card5, card6, card7, card8)
+            assertEquals(rootService.currentGame!!.players[0].name, rootService.gameService.endGame())
+        }
+
+        rootService.gameService.addPlayers("Vladimir", "Player2")
+        rootService.currentGame!!.players[1].deck = mutableListOf(card1, card2, card3, card4)
+        rootService.currentGame!!.players[0].deck = mutableListOf(card5, card6, card7, card8)
+        assertEquals(rootService.currentGame!!.players[0].name, rootService.gameService.endGame())
+
+        rootService.gameService.addPlayers("Vladimir", "Player2")
+        val card11 : Card = Card(CardSuit.DIAMONDS, CardValue.ACE)
+        val card12 : Card = Card(CardSuit.DIAMONDS, CardValue.ACE)
+        val card13 : Card = Card(CardSuit.DIAMONDS, CardValue.ACE)
+        val card14 : Card = Card(CardSuit.DIAMONDS, CardValue.ACE)
+        val card15 : Card = Card(CardSuit.DIAMONDS, CardValue.ACE)
+        val card16 : Card = Card(CardSuit.DIAMONDS, CardValue.ACE)
+        val card17 : Card = Card(CardSuit.DIAMONDS, CardValue.ACE)
+        val card18 : Card = Card(CardSuit.DIAMONDS, CardValue.ACE)
+        rootService.currentGame!!.players[0].deck = mutableListOf(card11, card12, card13, card14)
+        rootService.currentGame!!.players[1].deck = mutableListOf(card15, card16, card17, card18)
+        assertEquals("Draw", rootService.gameService.endGame())
     }
 }
