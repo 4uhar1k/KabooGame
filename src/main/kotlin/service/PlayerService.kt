@@ -16,7 +16,7 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
      */
     fun drawCard(used: Boolean){
         val kaboo = rootService.currentGame
-        var usablePower: Boolean = false
+        var usablePower = false
         val listOfUsablePowers = mutableListOf<String>("QUEEN", "JACK", "TEN", "NINE", "EIGHT", "SEVEN")
         if (kaboo == null){
             throw IllegalStateException("Game not started yet")
@@ -60,6 +60,7 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
 
         kaboo.usedStack.push(hand)
         currentPlayer.hand = null
+        onAllRefreshables { refreshAfterDiscard() }
     }
 
     /**
@@ -159,25 +160,25 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
             otherPlayer = kaboo.players[0]
         if (hand.value == CardValue.SEVEN || hand.value == CardValue.EIGHT){
             onAllRefreshables { refreshAfterUsePower(true,false) }
-            var selectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
+            val selectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
             chooseCard(selectedPosition, currentPlayer)
             peakCardPlayer(selectedPosition, currentPlayer)
             onAllRefreshables { refreshAfterPeakCardPlayer(selectedPosition, currentPlayer) }
         }
         else if (hand.value == CardValue.NINE || hand.value == CardValue.TEN){
             onAllRefreshables { refreshAfterUsePower(false,true) }
-            var selectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
+            val selectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
             chooseCard(selectedPosition, otherPlayer)
             peakCardPlayer(selectedPosition, otherPlayer)
             onAllRefreshables { refreshAfterPeakCardPlayer(selectedPosition, otherPlayer) }
         }
         else if (hand.value == CardValue.JACK || hand.value == CardValue.QUEEN){
             onAllRefreshables { refreshAfterUsePower(true,false) }
-            var ownSelectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
+            val ownSelectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
             chooseCard(ownSelectedPosition, currentPlayer)
             peakCardPlayer(ownSelectedPosition, currentPlayer)
             onAllRefreshables { refreshAfterUsePower(false,true) }
-            var otherSelectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
+            val otherSelectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
             chooseCard(otherSelectedPosition, otherPlayer)
             peakCardPlayer(otherSelectedPosition, otherPlayer)
         }

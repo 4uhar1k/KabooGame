@@ -37,6 +37,7 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
     fun addPlayers(namePlayer1: String, namePlayer2: String){
         player1 = Player(namePlayer1)
         player2 = Player(namePlayer2)
+        onAllRefreshables { refreshAfterAddPlayers() }
     }
     /**
      * [createDeck] is a method, which shuffles all our cards into the new stack

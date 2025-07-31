@@ -61,6 +61,20 @@ class GameServiceTest {
         for (i in 1..43){
             assertFalse{testList[i].equalsTo(testList[i-1])}
         }
+    }
+
+    @Test
+    fun testGameMove(){
+
+    }
+
+    @Test
+    fun testEndTurn(){
+
+    }
+
+    @Test
+    fun testEndGame(){
 
     }
 }
