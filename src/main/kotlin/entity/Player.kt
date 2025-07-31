@@ -9,9 +9,9 @@ package entity
  * @property otherSelected The card the player has chosen for swapping from rival's deck
  * @property deck Player's card deck (4 cards, 2x2)
  */
-data class Player(val name: String = "Player", var knocked: Boolean? = false, var viewedCards: Boolean? = false) {
+data class Player(val name: String = "Player", var knocked: Boolean = false, var viewedCards: Boolean = false) {
     var hand : Card? = null
-    val ownSelected : Card? = null
-    val otherSelected : Card? = null
+    var ownSelected : DeckPosition = DeckPosition.TOP_LEFT
+    var otherSelected : DeckPosition = DeckPosition.TOP_LEFT
     var deck : MutableList<Card> = mutableListOf()
 }

@@ -25,6 +25,7 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
         kaboo.currentPlayer = player1
         kaboo.newStack = createDeck()
         giveStartCards()
+        rootService.playerService.peakCardsFirstRound()
     }
 
     /**
@@ -91,7 +92,7 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
         if (kaboo.currentPlayer?.knocked == true || kaboo.newStack.size == 0){
             endGame()
         }
-        if (otherPlayer.knocked == true){
+        if (otherPlayer.knocked){
             //knocked not allowed anymore
         }
         else
