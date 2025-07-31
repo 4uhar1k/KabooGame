@@ -57,7 +57,7 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
         for (card in randomListOfCards) {
             deck.push(card)  // Use push instead of add/addAll
         }
-        return deck//Stack<Card>().apply { addAll(randomListOfCards) }
+        return deck
     }
 
     /**
@@ -75,11 +75,9 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
         }
         for (i in 0..3){
             player1.deck.add(kaboo.newStack.pop())
-            //kaboo.newStack.pop()
         }
         for (i in 0..3){
             player2.deck.add(kaboo.newStack.pop())
-            //kaboo.newStack.pop()
         }
     }
 
@@ -150,13 +148,12 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
             sum1 += player1.deck[i].value.toInt()
             sum2 += player2.deck[i].value.toInt()
         }
-        var winnerMessage: String
-        if (sum1 < sum2)
-            winnerMessage = player1.name
+        val winnerMessage: String = if (sum1 < sum2)
+            player1.name
         else if (sum2 < sum1)
-            winnerMessage = player2.name
+            player2.name
         else
-            winnerMessage = "Draw"
+            "Draw"
         onAllRefreshables { refreshAfterEndGame(winnerMessage) }
         rootService.currentGame = null
         return winnerMessage

@@ -22,13 +22,15 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
             throw IllegalStateException("Game not started yet")
         }
         if (used){
-            kaboo.currentPlayer?.hand = kaboo.usedStack.peek()
-            kaboo.usedStack.pop()
+            if (kaboo.usedStack.size == 0)
+                IllegalStateException("Used stack is empty")
+            kaboo.currentPlayer?.hand = kaboo.usedStack.pop()
+
         }
         else
         {
-            kaboo.currentPlayer?.hand = kaboo.newStack.peek()
-            kaboo.newStack.pop()
+            kaboo.currentPlayer?.hand = kaboo.newStack.pop()
+
         }
         if (listOfUsablePowers.find { it == kaboo.currentPlayer?.hand?.value.toString() } != null){
             usablePower = true
