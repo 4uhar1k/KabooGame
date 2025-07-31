@@ -4,17 +4,18 @@ import tools.aqua.bgw.util.Stack
 import java.util.Collections.addAll
 import kotlin.IllegalStateException
 
-class GameService (private val rootService: RootService){
-    val kaboo = Kaboo()
+class GameService (private val rootService: RootService): AbstractRefreshingService() {
+
     var player1 = Player()
     var player2 = Player()
     fun startGame(){
+        val kaboo = Kaboo()
+        rootService.currentGame = kaboo
         kaboo.currentPlayer = player1
         kaboo.players.add(player1)
         kaboo.players.add(player2)
         kaboo.newStack = createDeck()
         giveStartCards()
-        rootService.currentGame = kaboo
     }
     fun addPlayers(namePlayer1: String, namePlayer2: String){
         player1 = Player(namePlayer1)
@@ -30,6 +31,10 @@ class GameService (private val rootService: RootService){
         return Stack<Card>().apply { addAll(randomListOfCards) }
     }
     fun giveStartCards(){
+        val kaboo = rootService.currentGame
+        if (kaboo == null){
+            throw IllegalStateException("Game not started yet")
+        }
         for (i in 0..3){
             player1.deck.add(kaboo.newStack.peek())
             kaboo.newStack.pop()
@@ -56,18 +61,18 @@ class GameService (private val rootService: RootService){
         if (otherPlayer.knocked == true){
             //knocked not allowed anymore
         }
-        val drawFromNewStack = false // should be updated by actions in gui
-
-        if (drawFromNewStack){
-            kaboo.currentPlayer?.hand = kaboo.newStack.peek()
-            kaboo.newStack.pop()
-        }
         else
         {
-            kaboo.currentPlayer?.hand = kaboo.usedStack.peek()
-            kaboo.usedStack.pop()
+            val knocked : Boolean = false // should be updated by interactions in gui
+            if (knocked) {
+                rootService.playerService.knock()
+
+            }
+
         }
 
+        val used: Boolean = false // should be updated by interactions in gui
+        rootService.playerService.drawCard(used)
     }
 
 
@@ -80,6 +85,7 @@ class GameService (private val rootService: RootService){
             kaboo.currentPlayer = player2
         else
             kaboo.currentPlayer = player1
+        onAllRefreshables { refreshAfterEachTurn() }
     }
 
     fun endGame(): String{
@@ -93,12 +99,14 @@ class GameService (private val rootService: RootService){
             sum1 += player1.deck[i].value.toInt()
             sum2 += player2.deck[i].value.toInt()
         }
-        //end game menu
+        var winnerMessage: String
         if (sum1 > sum2)
-            return player1.name
+            winnerMessage = player1.name
         else if (sum2 > sum1)
-            return player2.name
+            winnerMessage = player2.name
         else
-            return "Draw"
+            winnerMessage = "Draw"
+        onAllRefreshables { refreshAfterEndGame(winnerMessage) }
+        return winnerMessage
     }
 }

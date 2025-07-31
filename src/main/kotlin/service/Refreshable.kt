@@ -19,7 +19,7 @@ interface Refreshable{
     fun refreshAfterAddPlayers(){
 
     }
-    fun refreshAfterEndGame(){
+    fun refreshAfterEndGame(winnerMessage: String){
 
     }
     fun refreshAfterDraw(discardable: Boolean, usablePower: Boolean){
