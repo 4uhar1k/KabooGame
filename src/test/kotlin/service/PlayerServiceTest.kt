@@ -15,9 +15,43 @@ class PlayerServiceTest {
         rootService.gameService.addPlayers("Vladimir", "Player2")
     }
 
+    /**
+     * tests all the methods, if game has not started yet
+     */
     @Test
     fun testIfNull(){
         rootService.currentGame = null
+        assertFails{
+            rootService.playerService.drawCard(false)
+        }
+        assertFails{
+            rootService.playerService.discard()
+        }
+        assertFails{
+            rootService.playerService.swapSelf(DeckPosition.NOT_SELECTED)
+        }
+        assertFails{
+            rootService.playerService.swapOther(DeckPosition.NOT_SELECTED, DeckPosition.NOT_SELECTED)
+        }
+        assertFails{
+            rootService.playerService.usePower()
+        }
+        assertFails{
+            rootService.playerService.knock()
+        }
+        assertFails{
+            rootService.playerService.peakCardsFirstRound()
+        }
+        assertFails{
+            rootService.playerService.chooseCard(DeckPosition.NOT_SELECTED, rootService.currentGame!!.currentPlayer!!)
+        }
+    }
+    /**
+     * tests all the methods, if game has not started yet
+     */
+    @Test
+    fun testIfNoCurrentPlayer(){
+        rootService.currentGame!!.currentPlayer = null
         assertFails{
             rootService.playerService.drawCard(false)
         }
@@ -60,6 +94,7 @@ class PlayerServiceTest {
         rootService.playerService.drawCard(true)
         assertEquals(0, rootService.currentGame!!.usedStack.size)
         assertNotEquals(null, rootService.currentGame!!.currentPlayer!!.hand)
+        //assertEquals(true, rootService.playerService.usePower())
     }
 
     /**
