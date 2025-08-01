@@ -22,6 +22,10 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
         if (kaboo == null){
             throw IllegalStateException("Game not started yet")
         }
+        if (kaboo.currentPlayer == null){
+            throw IllegalStateException("Game not started yet")
+        }
+
         if (used){
             if (kaboo.usedStack.size == 0)
                 IllegalStateException("Used stack is empty")
