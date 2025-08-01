@@ -47,11 +47,13 @@ class PlayerServiceTest {
         }
     }
     /**
-     * tests all the methods, if game has not started yet
+     * tests all the methods, if there is no current player
      */
     @Test
     fun testIfNoCurrentPlayer(){
-        rootService.currentGame!!.currentPlayer = null
+        val kaboo = rootService.currentGame
+        kaboo!!.currentPlayer = null
+        rootService.currentGame = kaboo
         assertFails{
             rootService.playerService.drawCard(false)
         }
