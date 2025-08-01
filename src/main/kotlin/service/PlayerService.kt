@@ -11,7 +11,8 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
 
     /**
      * This method allows the player to take the card from either the draw pile or the discard pile
-     * @param used the Boolean parameter, that shows whether the card should be taken from draw (false) or discard pile(true).
+     * @param used the Boolean parameter,
+     * that shows whether the card should be taken from draw (false) or discard pile(true).
      * @exception IllegalStateException Is thrown if the game is not started (kaboo == null)
      */
     fun drawCard(used: Boolean){
@@ -134,7 +135,8 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
      * Jack: Blindly swap with another player's card
      * Queen: View and/or swap own and opponent's cards
      * 7 or 8: View one of your own cards
-     * 9 or 10: View one of the opponent’s cards After the effect has been executed, the power card is placed face-up on the discard pile.
+     * 9 or 10: View one of the opponent’s cards After the effect has been executed,
+     * the power card is placed face-up on the discard pile.
      * @exception IllegalStateException Is thrown if the game is not started (kaboo == null),
      * if there is no current player or if current player got no hand card, or if
      * player's hand card is not a power card
@@ -229,7 +231,8 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
     }
 
     /**
-     * The method calls the method peakCardPlayer twice using indices for the bottom two cards and the current player as arguments.
+     * The method calls the method peakCardPlayer twice using
+     * indices for the bottom two cards and the current player as arguments.
      * @exception IllegalStateException Is thrown if the game is not started (kaboo == null),
      * if there is no current player or if the player has already viewed his bottom cards
      */
@@ -256,7 +259,8 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
     /**
      * This method is called, whenever a player chooses a card to swap when having a jack or queen.
      * It stores the chosen card in either the ownSelected or the otherSelected variable of the current player,
-     * depending on the cardOfPlayer. When both variables (ownSelected and otherSelected) are set and the current hand card is a Queen
+     * depending on the cardOfPlayer.
+     * When both variables (ownSelected and otherSelected) are set and the current hand card is a Queen
      * it calls the refreshAfterChooseCard to show the swap button.
      * If the current hand card is a Jack, it calls the swapOther() method to swap the selected cards immediately.
      * @param chosenCardPosition The position of the card in the Deck that the player has chosen to swap.
@@ -282,7 +286,8 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
             currentPlayer.otherSelected = chosenCardPosition
         }
 
-        if (currentPlayer.ownSelected != DeckPosition.NOT_SELECTED && currentPlayer.otherSelected != DeckPosition.NOT_SELECTED){
+        if (currentPlayer.ownSelected != DeckPosition.NOT_SELECTED &&
+            currentPlayer.otherSelected != DeckPosition.NOT_SELECTED){
             if (currentPlayer.hand?.value == CardValue.JACK){
                 swapOther(currentPlayer.ownSelected, currentPlayer.otherSelected)
                 onAllRefreshables { refreshAfterSwapOther(currentPlayer.ownSelected, currentPlayer.otherSelected) }

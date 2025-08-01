@@ -52,7 +52,8 @@ interface Refreshable{
     }
 
     /**
-     * Updates GUI after SwapOther is done (refreshes the positions in currentPlayer and otherPlayer deck and usedCardStack)
+     * Updates GUI after SwapOther is done
+     * (refreshes the positions in currentPlayer and otherPlayer deck and usedCardStack)
      * @param ownPosition position in currentPlayer Deck to swap Cards
      * @param otherPosition position in otherPlayer Deck to swap Cards
      */
@@ -78,14 +79,16 @@ interface Refreshable{
     }
 
     /**
-     * This method will update every scene that is using it in GUI. It will be called by endTurn() so the dialogue box gets displayed.
+     * This method will update every scene that is using it in GUI.
+     * It will be called by endTurn() so the dialogue box gets displayed.
      */
     fun refreshAfterEachTurn(){
 
     }
 
     /**
-     * The method is called after a player has knocked. All relevant UI components are notified of the knock and update accordingly.
+     * The method is called after a player has knocked.
+     * All relevant UI components are notified of the knock and update accordingly.
      */
     fun refreshAfterKnock(){
 

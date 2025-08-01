@@ -53,7 +53,7 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
                 CardValue.entries[index % 13]
             )
         }.shuffled().toMutableList()
-        var deck = Stack<Card>()
+        val deck = Stack<Card>()
         for (card in randomListOfCards) {
             deck.push(card)  // Use push instead of add/addAll
         }
@@ -134,7 +134,8 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
     /**
      * [endGame] is a method, which ends the game
      * It calculates points of each player's deck and returns winner's name
-     * @return The method returns the name of a player, who got fewer points. If players got equal points, "Draw" is returned.
+     * @return The method returns the name of a player, who got fewer points.
+     * If players got equal points, "Draw" is returned.
      * @exception IllegalStateException is thrown, if the game is not started (kaboo == null)
      */
     fun endGame(): String{

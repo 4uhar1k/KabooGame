@@ -13,6 +13,9 @@ data class Card(val suit: CardSuit, val value: CardValue) {
      */
     override fun toString() = "$suit$value"
 
+    /**
+     * The [equalsTo] method compares two cards between each other
+     */
     fun equalsTo(other: Card): Boolean{
         return suit == other.suit && value == other.value
     }

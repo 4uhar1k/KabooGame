@@ -8,7 +8,7 @@ import entity.Kaboo
  * This class acts as a central hub for every other service within the application.
  *
  */
-class RootService(){
+class RootService{
     val gameService = GameService(this)
     val playerService = PlayerService(this)
 
