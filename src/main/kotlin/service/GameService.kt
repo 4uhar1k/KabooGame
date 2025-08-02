@@ -11,6 +11,7 @@ import kotlin.IllegalStateException
 class GameService (private val rootService: RootService): AbstractRefreshingService() {
     var player1 = Player()
     var player2 = Player()
+    var otherPlayer = Player()
     var playerWantsToKnock = false // should be updated by interactions in gui
     public var kaboo = Kaboo()
     /**
@@ -94,7 +95,7 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
         if (kaboo == null){
             throw IllegalStateException("Game not started yet")
         }
-        var otherPlayer = Player()
+
         if (kaboo.currentPlayer == player1)
             otherPlayer = player2
         else

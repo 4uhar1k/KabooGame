@@ -40,13 +40,16 @@ class GameServiceTest {
         assertNotNull(rootService.currentGame)
         assertEquals(2, rootService.currentGame?.players?.size)
         assertEquals(Player(name="Vladimir", viewedCards = true), rootService.currentGame?.currentPlayer)
-        assertNotNull( rootService.currentGame?.newStack)
-        assertNotNull(rootService.currentGame?.usedStack)
-        assertEquals(44, rootService.currentGame?.newStack?.size)
-        assertEquals(0, rootService.currentGame?.usedStack?.size)
+        assertNotNull( rootService.currentGame!!.newStack)
+        assertNotNull(rootService.currentGame!!.usedStack)
+        assertEquals(44, rootService.currentGame!!.newStack.size)
+        assertEquals(0, rootService.currentGame!!.usedStack.size)
         val players = rootService.currentGame!!.players
         assertEquals(4, players[0].deck.size)
         assertEquals(4, players[1].deck.size)
+        for (i in 0..43)
+            rootService.currentGame!!.newStack.pop()
+        assertFails{ rootService.gameService.giveStartCards() }
     }
 
     /**
@@ -87,7 +90,11 @@ class GameServiceTest {
     }
     @Test
     fun testGameMove(){
-
+        rootService.gameService.gameMove()
+        assertEquals(rootService.currentGame!!.players[1], rootService.gameService.otherPlayer)
+        rootService.gameService.endTurn()
+        rootService.gameService.gameMove()
+        assertEquals(rootService.currentGame!!.players[0], rootService.gameService.otherPlayer)
     }
 
     /**
