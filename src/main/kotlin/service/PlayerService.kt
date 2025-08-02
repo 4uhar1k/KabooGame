@@ -37,7 +37,7 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
             kaboo.currentPlayer?.hand = kaboo.newStack.pop()
 
         }
-        if (listOfUsablePowers.find { it == kaboo.currentPlayer?.hand?.value.toString() } != null){
+        if (listOfUsablePowers.any { it == kaboo.currentPlayer?.hand?.value.toString() }){
             usablePower = true
         }
         onAllRefreshables { refreshAfterDraw(!used, usablePower) }
