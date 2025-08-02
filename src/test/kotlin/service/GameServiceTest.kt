@@ -88,6 +88,10 @@ class GameServiceTest {
         assertEquals("Vladimir", rootService.currentGame!!.players[0].name)
         assertEquals("Player2", rootService.currentGame!!.players[1].name)
     }
+
+    /**
+     * tests, if gameMove() works correctly
+     */
     @Test
     fun testGameMove(){
         rootService.gameService.gameMove()
