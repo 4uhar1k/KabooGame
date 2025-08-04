@@ -17,13 +17,13 @@ class SopraApplication : BoardGameApplication("SoPra Game") {
     /**
      * The main game scene displayed in the application.
      */
-    private val helloScene = HelloScene()
+    private val helloScene = KabooStartMenuScene()
 
     /**
-     * Initializes the application by displaying the [HelloScene].
+     * Initializes the application by displaying the [KabooStartMenuScene].
      */
     init {
-        this.showGameScene(helloScene)
+        this.showMenuScene(helloScene)
     }
 
 }
