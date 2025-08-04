@@ -21,15 +21,47 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
     private val player1HandCard = LabeledStackView(posX = 195, posY = 100 )
     private val player2HandCard = LabeledStackView(posX = 1595, posY = 100)
 
-    private val player1TopLeft = LabeledStackView(posX = 145, posY = 520 )
-    private val player1TopRight = LabeledStackView(posX = 345, posY = 520)
-    private val player1BottomLeft = LabeledStackView(posX = 145, posY = 800 )
-    private val player1BottomRight = LabeledStackView(posX = 345, posY = 800)
+    private val player1TopLeft = LabeledStackView(posX = 145, posY = 520 ).apply{
+        onMouseClicked = {
+            flipCard(this.peek())
+        }
+    }
+    private val player1TopRight = LabeledStackView(posX = 345, posY = 520).apply{
+        onMouseClicked = {
+            flipCard(this.peek())
+        }
+    }
+    private val player1BottomLeft = LabeledStackView(posX = 145, posY = 800 ).apply{
+        onMouseClicked = {
+            flipCard(this.peek())
+        }
+    }
+    private val player1BottomRight = LabeledStackView(posX = 345, posY = 800).apply{
+        onMouseClicked = {
+            flipCard(this.peek())
+        }
+    }
 
-    private val player2TopLeft = LabeledStackView(posX = 1445, posY = 520 )
-    private val player2TopRight = LabeledStackView(posX = 1645, posY = 520)
-    private val player2BottomLeft = LabeledStackView(posX = 1445, posY = 800 )
-    private val player2BottomRight = LabeledStackView(posX = 1645, posY = 800)
+    private val player2TopLeft = LabeledStackView(posX = 1445, posY = 520 ).apply{
+        onMouseClicked = {
+            flipCard(this.peek())
+        }
+    }
+    private val player2TopRight = LabeledStackView(posX = 1645, posY = 520).apply{
+        onMouseClicked = {
+            flipCard(this.peek())
+        }
+    }
+    private val player2BottomLeft = LabeledStackView(posX = 1445, posY = 800 ).apply{
+        onMouseClicked = {
+            flipCard(this.peek())
+        }
+    }
+    private val player2BottomRight = LabeledStackView(posX = 1645, posY = 800).apply{
+        onMouseClicked = {
+            flipCard(this.peek())
+        }
+    }
 
     private val newStack = LabeledStackView(posX = 800, posY = 100 ).apply {
         onMouseClicked = {
@@ -72,7 +104,8 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         initializeStackView(game.usedStack, usedStack, cardImageLoader)
         player1HandCard.clear()
         player2HandCard.clear()
-
+        initializePlayersDecks(game.players[0].deck, game.players[0], cardImageLoader)
+        initializePlayersDecks(game.players[1].deck, game.players[1], cardImageLoader)
     }
 
     override fun refreshAfterDraw(discardable: Boolean, usablePower: Boolean) {
@@ -123,6 +156,30 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
 
     }
 
+    override fun refreshAfterPeakCardPlayer(positionToPeak: DeckPosition, playerToPeak: Player) {
+        val game = rootService.currentGame
+
+        checkNotNull(game) { "No game found." }
+        val player1 = game.players[0]
+        val player2 = game.players[1]
+        if (playerToPeak == player1){
+            when (positionToPeak.toInt()) {
+                0 -> flipCard(player1TopLeft.peek())
+                1 -> flipCard(player1TopRight.peek())
+                2 -> flipCard(player1BottomLeft.peek())
+                3 -> flipCard(player1BottomRight.peek())
+            }
+        }
+        else {
+            when (positionToPeak.toInt()) {
+                0 -> flipCard(player2TopLeft.peek())
+                1 -> flipCard(player2TopRight.peek())
+                2 -> flipCard(player2BottomLeft.peek())
+                3 -> flipCard(player2BottomRight.peek())
+            }
+        }
+    }
+
     private fun initializeStackView(stack: Stack<Card>, stackView: LabeledStackView, cardImageLoader: CardImageLoader) {
         stackView.clear()
         stack.peekAll().reversed().forEach { card ->
@@ -137,6 +194,78 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         }
     }
 
+    private fun initializePlayersDecks(deck: MutableList<Card>, player: Player, cardImageLoader: CardImageLoader) {
+        val game = rootService.currentGame
+        val player1 = game!!.players[0]
+        val player2 = game.players[1]
+        /*for (card in deck){
+            val cardView = CardView(
+                height = 250,
+                width = 162.5,
+                front = cardImageLoader.frontImageFor(card.suit, card.value),
+                back = cardImageLoader.backImage
+            )
+        }*/
+        if (player == player1){
+            player1TopLeft.add(CardView(
+            height = 250,
+            width = 162.5,
+            front = cardImageLoader.frontImageFor(player1.deck[0].suit, player1.deck[0].value),
+            back = cardImageLoader.backImage
+            ))
+
+            player1TopRight.add(CardView(
+                height = 250,
+                width = 162.5,
+                front = cardImageLoader.frontImageFor(player1.deck[1].suit, player1.deck[1].value),
+                back = cardImageLoader.backImage
+            ))
+
+            player1BottomLeft.add(CardView(
+                height = 250,
+                width = 162.5,
+                front = cardImageLoader.frontImageFor(player1.deck[2].suit, player1.deck[2].value),
+                back = cardImageLoader.backImage
+            ))
+
+            player1BottomRight.add(CardView(
+                height = 250,
+                width = 162.5,
+                front = cardImageLoader.frontImageFor(player1.deck[3].suit, player1.deck[3].value),
+                back = cardImageLoader.backImage
+            ))
+        }
+        else{
+            player2TopLeft.add(CardView(
+                height = 250,
+                width = 162.5,
+                front = cardImageLoader.frontImageFor(player2.deck[0].suit, player2.deck[0].value),
+                back = cardImageLoader.backImage
+            ))
+
+            player2TopRight.add(CardView(
+                height = 250,
+                width = 162.5,
+                front = cardImageLoader.frontImageFor(player2.deck[1].suit, player2.deck[1].value),
+                back = cardImageLoader.backImage
+            ))
+
+            player2BottomLeft.add(CardView(
+                height = 250,
+                width = 162.5,
+                front = cardImageLoader.frontImageFor(player2.deck[2].suit, player2.deck[2].value),
+                back = cardImageLoader.backImage
+            ))
+
+            player2BottomRight.add(CardView(
+                height = 250,
+                width = 162.5,
+                front = cardImageLoader.frontImageFor(player2.deck[3].suit, player2.deck[3].value),
+                back = cardImageLoader.backImage
+            ))
+        }
+    }
+
     private fun moveCardView(cardView: CardView, toStack: LabeledStackView, flip: Boolean) {
         if (flip) {
             when (cardView.currentSide) {
@@ -148,6 +277,15 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         cardView.removeFromParent()
 
         toStack.add(cardView)
+    }
+
+    private fun flipCard(cardView: CardView) {
+
+        when (cardView.currentSide) {
+            CardView.CardSide.BACK -> cardView.showFront()
+            CardView.CardSide.FRONT -> cardView.showBack()
+        }
+
     }
 
     private fun checkAllStackViews(game: Kaboo) {
