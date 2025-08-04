@@ -18,7 +18,7 @@ import tools.aqua.bgw.visual.TextVisual
  * @param rotate if true, the label will be rotated 180 degrees
  */
 class LabeledStackView(posX: Number, posY: Number, label: String = "", rotate: Boolean = false) :
-    CardStack<CardView>(height = 300, width = 195, posX = posX, posY = posY) {
+    CardStack<CardView>(height = 250, width = 162.5, posX = posX, posY = posY) {
 
     init {
         visual = CompoundVisual(

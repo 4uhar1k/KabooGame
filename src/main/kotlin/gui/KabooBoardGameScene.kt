@@ -21,14 +21,24 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
     private val player1HandCard = LabeledStackView(posX = 195, posY = 100 )
     private val player2HandCard = LabeledStackView(posX = 1595, posY = 100)
 
-    private val newStack = LabeledStackView(posX = 700, posY = 100 ).apply {
+    private val player1TopLeft = LabeledStackView(posX = 145, posY = 520 )
+    private val player1TopRight = LabeledStackView(posX = 345, posY = 520)
+    private val player1BottomLeft = LabeledStackView(posX = 145, posY = 800 )
+    private val player1BottomRight = LabeledStackView(posX = 345, posY = 800)
+
+    private val player2TopLeft = LabeledStackView(posX = 1445, posY = 520 )
+    private val player2TopRight = LabeledStackView(posX = 1645, posY = 520)
+    private val player2BottomLeft = LabeledStackView(posX = 1445, posY = 800 )
+    private val player2BottomRight = LabeledStackView(posX = 1645, posY = 800)
+
+    private val newStack = LabeledStackView(posX = 800, posY = 100 ).apply {
         onMouseClicked = {
             rootService.currentGame?.let { game ->
                 rootService.playerService.drawCard(false)
             }
         }
     }
-    private val usedStack = LabeledStackView(posX = 1100, posY = 100).apply {
+    private val usedStack = LabeledStackView(posX = 1000, posY = 100).apply {
         onMouseClicked = {
             if (rootService.currentGame!!.currentPlayer!!.hand == null)
             {
@@ -48,7 +58,9 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
 
     init {
         background = ColorVisual(108, 168, 59)
-        addComponents(player1HandCard, player2HandCard, usedStack, newStack)
+        addComponents(player1HandCard, player2HandCard, usedStack, newStack,
+            player1TopLeft, player1TopRight, player1BottomLeft, player1BottomRight,
+            player2TopLeft, player2TopRight, player2BottomLeft, player2BottomRight)
     }
     override fun refreshAfterStartGame() {
         val game = rootService.currentGame
@@ -115,8 +127,8 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         stackView.clear()
         stack.peekAll().reversed().forEach { card ->
             val cardView = CardView(
-                height = 300,
-                width = 195,
+                height = 250,
+                width = 162.5,
                 front = cardImageLoader.frontImageFor(card.suit, card.value),
                 back = cardImageLoader.backImage
             )
