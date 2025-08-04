@@ -9,6 +9,7 @@ import tools.aqua.bgw.util.Font
 import tools.aqua.bgw.visual.ColorVisual
 import kotlin.text.clear
 import entity.*
+import tools.aqua.bgw.components.uicomponents.Button
 import tools.aqua.bgw.util.BidirectionalMap
 import tools.aqua.bgw.util.Stack
 import kotlin.collections.get
@@ -86,13 +87,28 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         }
     }
 
+    private val nextTurnButton = Button(
+        width = 350, height = 75,
+        posX = 785, posY = 450,
+        text = "Next turn",
+        font = Font(size = 38)
+    ).apply {
+        visual = ColorVisual(255, 255, 255)
+        onMouseClicked = {
+            rootService.currentGame?.let {
+                rootService.gameService.endTurn()
+            }
+        }
+    }
+
     private val cardMap: BidirectionalMap<Card, CardView> = BidirectionalMap()
 
     init {
         background = ColorVisual(108, 168, 59)
         addComponents(player1HandCard, player2HandCard, usedStack, newStack,
             player1TopLeft, player1TopRight, player1BottomLeft, player1BottomRight,
-            player2TopLeft, player2TopRight, player2BottomLeft, player2BottomRight)
+            player2TopLeft, player2TopRight, player2BottomLeft, player2BottomRight,
+            nextTurnButton)
     }
     override fun refreshAfterStartGame() {
         val game = rootService.currentGame
@@ -106,6 +122,30 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         player2HandCard.clear()
         initializePlayersDecks(game.players[0].deck, game.players[0], cardImageLoader)
         initializePlayersDecks(game.players[1].deck, game.players[1], cardImageLoader)
+    }
+
+    override fun refreshAfterEachTurn() {
+        val game = rootService.currentGame
+        checkNotNull(game)
+        val currentPlayer = game.currentPlayer
+        val listOfCardViews1 = mutableListOf<CardView>(player1TopLeft.peek(),
+            player1TopRight.peek(), player1BottomLeft.peek(), player1BottomRight.peek())
+        val listOfCardViews2 = mutableListOf<CardView>(player2TopLeft.peek(),
+            player2TopRight.peek(), player2BottomLeft.peek(), player2BottomRight.peek())
+        if (currentPlayer == game.players[1]){
+            for (card in listOfCardViews1){
+                if (card.currentSide == CardView.CardSide.FRONT){
+                    flipCard(card)
+                }
+            }
+        }
+        else {
+            for (card in listOfCardViews2){
+                if (card.currentSide == CardView.CardSide.FRONT){
+                    flipCard(card)
+                }
+            }
+        }
     }
 
     override fun refreshAfterDraw(discardable: Boolean, usablePower: Boolean) {
@@ -132,9 +172,6 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
             println("drawed card ${player1HandCard.numberOfComponents()} ${usedStack.numberOfComponents()}")
             checkAllStackViews(game)
         }
-        //initializeStackView(game.newStack, newStack, cardImageLoader)
-        //initializeStackView(game.usedStack, usedStack, cardImageLoader)
-
     }
 
     override fun refreshAfterDiscard() {

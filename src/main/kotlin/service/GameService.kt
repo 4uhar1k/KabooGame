@@ -129,6 +129,12 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
             kaboo.currentPlayer = player2
         else
             kaboo.currentPlayer = player1
+        if (kaboo.currentPlayer?.viewedCards == false){
+            rootService.playerService.peakCardsFirstRound()
+        }
+        if (kaboo.currentPlayer?.knocked == true){
+            endGame()
+        }
         onAllRefreshables { refreshAfterEachTurn() }
     }
 

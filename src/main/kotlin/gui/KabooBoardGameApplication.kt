@@ -4,6 +4,7 @@ import service.AbstractRefreshingService
 import tools.aqua.bgw.core.BoardGameApplication
 import service.RootService
 import service.Refreshable
+import java.lang.Thread.sleep
 
 
 /**
@@ -22,6 +23,7 @@ class KabooBoardGameApplication : BoardGameApplication("Kaboo"), Refreshable {
      */
     private val kabooStartMenuScene = KabooStartMenuScene(rootService)
     private val kabooBoardGameScene = KabooBoardGameScene(rootService)
+    private val kabooNextPlayerMenuScene = KabooNextPlayerMenuScene(rootService)
 
     /**
      * Initializes the application by displaying the [KabooStartMenuScene].
@@ -33,6 +35,7 @@ class KabooBoardGameApplication : BoardGameApplication("Kaboo"), Refreshable {
             this,
             kabooBoardGameScene,
             kabooStartMenuScene,
+            kabooNextPlayerMenuScene
         )
         rootService.gameService.addPlayers("Bob", "Alice")
         // This is just done so that the blurred background when showing
@@ -44,6 +47,11 @@ class KabooBoardGameApplication : BoardGameApplication("Kaboo"), Refreshable {
     override fun refreshAfterStartGame() {
         this.hideMenuScene()
         println("Kaboo Board Game Started!")
+    }
+
+    override fun refreshAfterEachTurn() {
+        //this.showMenuScene(kabooNextPlayerMenuScene)
+        //this.hideMenuScene()
     }
 
 }
