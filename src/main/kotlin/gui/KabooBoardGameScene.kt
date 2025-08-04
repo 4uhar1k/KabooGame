@@ -30,16 +30,16 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
     }
     private val usedStack = LabeledStackView(posX = 1100, posY = 100).apply {
         onMouseClicked = {
-            /*if (rootService.currentGame!!.currentPlayer!!.hand == null)
+            if (rootService.currentGame!!.currentPlayer!!.hand == null)
             {
-                moveCardView(cardMap.forward(rootService.currentGame!!.usedStack.pop()), player1HandCard, true)
-                this.pop()
+                rootService.playerService.drawCard(true)
+                //this.pop()
             }
-            else{*/
+            else{
                 rootService.currentGame?.let { game ->
                     rootService.playerService.discard()
                 }
-            //}
+            }
 
         }
     }
@@ -67,16 +67,29 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         val game = rootService.currentGame
         val cardImageLoader = CardImageLoader()
         checkNotNull(game) { "No game found." }
+        if (discardable){
+            game.newStack.push(game.currentPlayer!!.hand!!)
+
+            when (game.currentPlayer) {
+                game.players[0] -> moveCardView(cardMap.forward(game.newStack.pop()), player1HandCard, true)
+                game.players[1] -> moveCardView(cardMap.forward(game.newStack.pop()), player2HandCard, true)
+            }
+            println("drawed card ${player1HandCard.numberOfComponents()} ${usedStack.numberOfComponents()}")
+            checkAllStackViews(game)
+        }
+        else{
+            game.usedStack.push(game.currentPlayer!!.hand!!)
+
+            when (game.currentPlayer) {
+                game.players[0] -> moveCardView(cardMap.forward(game.usedStack.pop()), player1HandCard, false)
+                game.players[1] -> moveCardView(cardMap.forward(game.usedStack.pop()), player2HandCard, false)
+            }
+            println("drawed card ${player1HandCard.numberOfComponents()} ${usedStack.numberOfComponents()}")
+            checkAllStackViews(game)
+        }
         //initializeStackView(game.newStack, newStack, cardImageLoader)
         //initializeStackView(game.usedStack, usedStack, cardImageLoader)
-        game.newStack.push(game.currentPlayer!!.hand!!)
 
-        when (game.currentPlayer) {
-            game.players[0] -> moveCardView(cardMap.forward(game.newStack.pop()), player1HandCard, true)
-            game.players[1] -> moveCardView(cardMap.forward(game.newStack.pop()), player2HandCard, true)
-        }
-        println("drawed card ${player1HandCard.numberOfComponents()} ${usedStack.numberOfComponents()}")
-        checkAllStackViews(game)
     }
 
     override fun refreshAfterDiscard() {
@@ -86,19 +99,11 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
 
         when (game.currentPlayer) {
             game.players[0] -> {
-               /* if (usedStack.numberOfComponents() == 0){
-                    moveCardView(cardMap.forward(game.players[0].hand!!), usedStack, true)
-                }
-                else{*/
-                    moveCardView(cardMap.forward(game.players[0].hand!!), usedStack, false)
-                //}
-
-                //usedStack.push(cardMap.forward(game.players[0].hand!!))
+                moveCardView(cardMap.forward(game.players[0].hand!!), usedStack, false)
                 player1HandCard.clear()
             }
             game.players[1] -> {
                 moveCardView(cardMap.forward(game.players[1].hand!!), usedStack, false)
-                //usedStack.push(cardMap.forward(game.players[1].hand!!))
                 player2HandCard.clear()
             }
         }
