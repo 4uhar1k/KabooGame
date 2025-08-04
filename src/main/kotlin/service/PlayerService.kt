@@ -35,7 +35,6 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
         else
         {
             kaboo.currentPlayer?.hand = kaboo.newStack.pop()
-
         }
         if (listOfUsablePowers.any { it == kaboo.currentPlayer?.hand?.value.toString() }){
             usablePower = true
@@ -64,10 +63,11 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
         if (hand == null){
             throw IllegalStateException("No hand card")
         }
-
         kaboo.usedStack.push(hand)
-        currentPlayer.hand = null
         onAllRefreshables { refreshAfterDiscard() }
+
+        currentPlayer.hand = null
+
     }
 
     /**
