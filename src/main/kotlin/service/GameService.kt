@@ -47,7 +47,7 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
      * we use [index/13] for CardSuit because we got four type of suits (52/13=4)
      * we use [index%13] for CardValue because we got 12 values of cards
      */
-    fun createDeck() : Stack<Card> {
+    private fun createDeck() : Stack<Card> {
         val randomListOfCards = List(52){ index ->
             Card(
                 CardSuit.entries[index / 13],

@@ -184,6 +184,9 @@ class PlayerServiceTest {
         rootService.currentGame!!.players[1].knocked = false
         rootService.playerService.knock()
         assertEquals(true, rootService.currentGame!!.currentPlayer!!.knocked)
+        rootService.gameService.endTurn()
+        assertEquals(true, rootService.currentGame!!.players[0].knocked)
+        assertEquals(false, rootService.currentGame!!.players[1].knocked)
     }
 
     /**

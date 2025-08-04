@@ -180,7 +180,15 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
             peakCardPlayer(selectedPosition, otherPlayer)
             onAllRefreshables { refreshAfterPeakCardPlayer(selectedPosition, otherPlayer) }
         }
-        else if (hand.value == CardValue.JACK || hand.value == CardValue.QUEEN){
+        else if (hand.value == CardValue.JACK ){
+            onAllRefreshables { refreshAfterUsePower(true,false) }
+            val ownSelectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
+            chooseCard(ownSelectedPosition, currentPlayer)
+            onAllRefreshables { refreshAfterUsePower(false,true) }
+            val otherSelectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
+            chooseCard(otherSelectedPosition, otherPlayer)
+        }
+        else if (hand.value == CardValue.QUEEN){
             onAllRefreshables { refreshAfterUsePower(true,false) }
             val ownSelectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
             chooseCard(ownSelectedPosition, currentPlayer)
