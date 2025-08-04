@@ -14,4 +14,17 @@ class RootService{
 
     var currentGame: Kaboo? = null
 
+
+    fun addRefreshable(newRefreshable: Refreshable) {
+        gameService.addRefreshable(newRefreshable)
+        playerService.addRefreshable(newRefreshable)
+    }
+
+    /**
+     * Adds each of the provided [newRefreshables] to all services
+     * connected to this root service
+     */
+    fun addRefreshables(vararg newRefreshables: Refreshable) {
+        newRefreshables.forEach { addRefreshable(it) }
+    }
 }
