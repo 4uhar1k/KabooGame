@@ -39,7 +39,7 @@ class GameServiceTest {
         rootService.gameService.addPlayers("Vladimir", "Player2")
         assertNotNull(rootService.currentGame)
         assertEquals(2, rootService.currentGame?.players?.size)
-        assertEquals(Player(name="Vladimir", viewedCards = true), rootService.currentGame?.currentPlayer)
+        assertNotNull(rootService.currentGame!!.currentPlayer)
         assertNotNull( rootService.currentGame!!.newStack)
         assertNotNull(rootService.currentGame!!.usedStack)
         assertEquals(44, rootService.currentGame!!.newStack.size)
@@ -94,6 +94,7 @@ class GameServiceTest {
      */
     @Test
     fun testGameMove(){
+        rootService.currentGame!!.currentPlayer = rootService.currentGame!!.players[0]
         rootService.gameService.gameMove()
         assertEquals(rootService.currentGame!!.players[1], rootService.gameService.otherPlayer)
         rootService.gameService.endTurn()
@@ -108,10 +109,19 @@ class GameServiceTest {
     fun testEndTurn(){
         val player1 = rootService.currentGame!!.players[0]
         val player2 = rootService.currentGame!!.players[1]
-        rootService.gameService.endTurn()
-        assertEquals(player2, rootService.currentGame!!.currentPlayer)
-        rootService.gameService.endTurn()
-        assertEquals(player1, rootService.currentGame!!.currentPlayer)
+        if (rootService.currentGame!!.currentPlayer == player1){
+            rootService.gameService.endTurn()
+            assertEquals(player2, rootService.currentGame!!.currentPlayer)
+            rootService.gameService.endTurn()
+            assertEquals(player1, rootService.currentGame!!.currentPlayer)
+        }
+        else {
+            rootService.gameService.endTurn()
+            assertEquals(player1, rootService.currentGame!!.currentPlayer)
+            rootService.gameService.endTurn()
+            assertEquals(player2, rootService.currentGame!!.currentPlayer)
+        }
+
     }
 
     /**

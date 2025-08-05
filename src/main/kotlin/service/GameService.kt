@@ -21,9 +21,9 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
      */
     fun startGame(){
         kaboo = Kaboo()
-        kaboo.currentPlayer = player2
         kaboo.players.add(player1)
         kaboo.players.add(player2)
+        kaboo.currentPlayer = kaboo.players.random()
         kaboo.newStack = createDeck()
         rootService.currentGame = kaboo
         giveStartCards()

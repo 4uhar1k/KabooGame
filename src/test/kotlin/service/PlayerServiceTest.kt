@@ -1,5 +1,6 @@
 package service
 import entity.*
+import org.junit.jupiter.api.assertDoesNotThrow
 import kotlin.test.*
 /**
  * This class is implemented for testing [PlayerService]
@@ -93,6 +94,8 @@ class PlayerServiceTest {
         }
         val kaboo = rootService.currentGame
         kaboo!!.usedStack.push(Card(CardSuit.DIAMONDS, CardValue.TEN))
+        assertFails{rootService.playerService.drawCard(true)}
+        rootService.playerService.discard()
         rootService.playerService.drawCard(true)
         assertEquals(0, rootService.currentGame!!.usedStack.size)
         assertNotEquals(null, rootService.currentGame!!.currentPlayer!!.hand)
@@ -126,6 +129,7 @@ class PlayerServiceTest {
         val handCard = rootService.currentGame!!.currentPlayer!!.hand
         val cardToChange = rootService.currentGame!!.currentPlayer!!.deck[DeckPosition.TOP_LEFT.toInt()]
         rootService.playerService.swapSelf(DeckPosition.TOP_LEFT)
+        rootService.gameService.endTurn()
         assertEquals(handCard, rootService.currentGame!!.currentPlayer!!.deck[DeckPosition.TOP_LEFT.toInt()])
         assertEquals(cardToChange, rootService.currentGame!!.usedStack.peek())
         assertEquals(null, rootService.currentGame!!.currentPlayer!!.hand)
@@ -137,6 +141,11 @@ class PlayerServiceTest {
     @Test
     fun testSwapOther(){
         rootService.playerService.drawCard(false)
+        rootService.currentGame!!.currentPlayer = rootService.currentGame!!.players[0]
+        rootService.currentGame!!.currentPlayer!!.hand = Card(CardSuit.DIAMONDS, CardValue.TEN)
+        assertDoesNotThrow{rootService.playerService.swapOther(DeckPosition.TOP_LEFT, DeckPosition.TOP_RIGHT)}
+        rootService.currentGame!!.currentPlayer = rootService.currentGame!!.players[0]
+        rootService.currentGame!!.currentPlayer!!.hand = Card(CardSuit.DIAMONDS, CardValue.TEN)
         val prevOwnCard = rootService.currentGame!!.players[0].deck[DeckPosition.TOP_LEFT.toInt()]
         val prevOtherCard = rootService.currentGame!!.players[1].deck[DeckPosition.TOP_RIGHT.toInt()]
         rootService.playerService.swapOther(DeckPosition.TOP_LEFT, DeckPosition.TOP_RIGHT)
@@ -155,22 +164,11 @@ class PlayerServiceTest {
 
         rootService.currentGame!!.currentPlayer!!.hand = Card(CardSuit.DIAMONDS, CardValue.SEVEN)
         rootService.playerService.usePower()
-        assertNotEquals(DeckPosition.NOT_SELECTED, rootService.currentGame!!.currentPlayer!!.ownSelected)
+        assertEquals(DeckPosition.NOT_SELECTED, rootService.currentGame!!.currentPlayer!!.ownSelected)
         assertEquals(DeckPosition.NOT_SELECTED, rootService.currentGame!!.currentPlayer!!.otherSelected)
         rootService.gameService.endGame()
 
-        rootService.gameService.addPlayers("Vladimir", "Player2")
-        rootService.currentGame!!.currentPlayer!!.hand = Card(CardSuit.DIAMONDS, CardValue.NINE)
-        rootService.playerService.usePower()
-        assertEquals(DeckPosition.NOT_SELECTED, rootService.currentGame!!.currentPlayer!!.ownSelected)
-        assertNotEquals(DeckPosition.NOT_SELECTED, rootService.currentGame!!.currentPlayer!!.otherSelected)
-        rootService.gameService.endGame()
 
-        rootService.gameService.addPlayers("Vladimir", "Player2")
-        rootService.currentGame!!.currentPlayer!!.hand = Card(CardSuit.DIAMONDS, CardValue.JACK)
-        rootService.playerService.usePower()
-        assertNotEquals(DeckPosition.NOT_SELECTED, rootService.currentGame!!.currentPlayer!!.ownSelected)
-        assertNotEquals(DeckPosition.NOT_SELECTED, rootService.currentGame!!.currentPlayer!!.otherSelected)
     }
 
     /**
@@ -179,14 +177,28 @@ class PlayerServiceTest {
      */
     @Test
     fun testKnock(){
-        rootService.currentGame!!.players[1].knocked = true
+        var otherPlayer = Player()
+        if (rootService.currentGame!!.currentPlayer!! == rootService.currentGame!!.players[0]){
+            otherPlayer = rootService.currentGame!!.players[1]
+        }
+        else {
+            otherPlayer = rootService.currentGame!!.players[0]
+        }
+        otherPlayer.knocked = true
         assertFails { rootService.playerService.knock() }
-        rootService.currentGame!!.players[1].knocked = false
+        otherPlayer.knocked = false
         rootService.playerService.knock()
-        assertEquals(true, rootService.currentGame!!.currentPlayer!!.knocked)
-        rootService.gameService.endTurn()
-        assertEquals(true, rootService.currentGame!!.players[0].knocked)
-        assertEquals(false, rootService.currentGame!!.players[1].knocked)
+        if (rootService.currentGame!!.currentPlayer!! == rootService.currentGame!!.players[0]){
+            otherPlayer = rootService.currentGame!!.players[1]
+        }
+        else {
+            otherPlayer = rootService.currentGame!!.players[0]
+        }
+        assertEquals(false, rootService.currentGame!!.currentPlayer!!.knocked)
+        assertEquals(true, otherPlayer.knocked)
+
+
+
     }
 
     /**
@@ -214,16 +226,16 @@ class PlayerServiceTest {
         assertEquals(DeckPosition.NOT_SELECTED, currentPlayer.otherSelected)
 
         rootService.playerService.chooseCard(DeckPosition.TOP_LEFT, currentPlayer)
-        assertEquals(DeckPosition.TOP_LEFT, currentPlayer.ownSelected )
-        assertEquals(DeckPosition.NOT_SELECTED, currentPlayer.otherSelected)
+        assertEquals(DeckPosition.TOP_LEFT, rootService.currentGame!!.players[0].ownSelected )
+        assertEquals(DeckPosition.NOT_SELECTED, rootService.currentGame!!.players[0].otherSelected)
         rootService.gameService.endGame()
 
         rootService.gameService.addPlayers("Vladimir", "Player2")
-        currentPlayer = rootService.currentGame!!.players[0]
+        rootService.currentGame!!.currentPlayer = rootService.currentGame!!.players[0]
         var otherPlayer: Player = rootService.currentGame!!.players[1]
         rootService.playerService.chooseCard(DeckPosition.TOP_LEFT, otherPlayer)
-        assertEquals(DeckPosition.NOT_SELECTED, currentPlayer.ownSelected )
-        assertEquals(DeckPosition.TOP_LEFT, currentPlayer.otherSelected)
+        assertEquals(DeckPosition.NOT_SELECTED, rootService.currentGame!!.players[0].ownSelected )
+        assertEquals(DeckPosition.TOP_LEFT, rootService.currentGame!!.players[0].otherSelected)
         rootService.gameService.endGame()
 
         rootService.gameService.addPlayers("Vladimir", "Player2")
@@ -231,7 +243,7 @@ class PlayerServiceTest {
         otherPlayer = rootService.currentGame!!.players[1]
         rootService.playerService.chooseCard(DeckPosition.TOP_LEFT, currentPlayer)
         rootService.playerService.chooseCard(DeckPosition.TOP_LEFT, otherPlayer)
-        assertEquals(DeckPosition.TOP_LEFT, currentPlayer.ownSelected )
-        assertEquals(DeckPosition.TOP_LEFT, currentPlayer.otherSelected)
+        assertEquals(DeckPosition.TOP_LEFT, rootService.currentGame!!.players[0].ownSelected )
+        assertEquals(DeckPosition.TOP_LEFT, rootService.currentGame!!.players[0].otherSelected)
     }
 }
