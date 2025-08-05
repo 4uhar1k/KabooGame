@@ -92,6 +92,7 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         posX = 785, posY = 450,
         text = "Next turn",
         font = Font(size = 38)
+
     ).apply {
         visual = ColorVisual(255, 255, 255)
         onMouseClicked = {
@@ -100,6 +101,42 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
             }
         }
     }
+    private val usePowerButton = Button(
+        width = 350, height = 75,
+        posX = 785, posY = 550,
+        text = "Use Power",
+        font = Font(size = 38)
+    ).apply {
+        visual = ColorVisual(255, 255, 255)
+        onMouseClicked = {
+
+            }
+        }
+
+    private val knockButton = Button(
+        width = 350, height = 75,
+        posX = 785, posY = 650,
+        text = "Knock",
+        font = Font(size = 38)
+    ).apply {
+        visual = ColorVisual(255, 255, 255)
+        onMouseClicked = {
+
+            }
+        }
+
+    private val swapButton = Button(
+        width = 350, height = 75,
+        posX = 785, posY = 750,
+        text = "Swap cards",
+        font = Font(size = 38)
+    ).apply {
+        visual = ColorVisual(255, 255, 255)
+        onMouseClicked = {
+
+            }
+        }
+
 
     private val cardMap: BidirectionalMap<Card, CardView> = BidirectionalMap()
 
@@ -122,6 +159,9 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         player2HandCard.clear()
         initializePlayersDecks(game.players[0].deck, game.players[0], cardImageLoader)
         initializePlayersDecks(game.players[1].deck, game.players[1], cardImageLoader)
+       // usePowerButton.isVisible = false
+        //knockButton.isVisible = false
+       // swapButton.isVisible = false
     }
 
     override fun refreshAfterEachTurn() {
@@ -146,12 +186,28 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
                 }
             }
         }
+        if (player1BottomLeft.peek().currentSide != CardView.CardSide.FRONT &&
+        player1BottomRight.peek().currentSide != CardView.CardSide.FRONT &&
+        player2BottomLeft.peek().currentSide != CardView.CardSide.FRONT &&
+        player2BottomRight.peek().currentSide != CardView.CardSide.FRONT &&
+        !game.players[0].knocked && !game.players[1].knocked
+        ){
+            nextTurnButton.isVisible = true
+            nextTurnButton.text = "Knock"
+            nextTurnButton.apply {onMouseClicked = {
+                rootService.playerService.knock() }
+            }
+
+        }
+
+
     }
 
     override fun refreshAfterDraw(discardable: Boolean, usablePower: Boolean) {
         val game = rootService.currentGame
         val cardImageLoader = CardImageLoader()
         checkNotNull(game) { "No game found." }
+        nextTurnButton.isVisible = false
         if (discardable){
             game.newStack.push(game.currentPlayer!!.hand!!)
 
@@ -171,6 +227,10 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
             }
             println("drawed card ${player1HandCard.numberOfComponents()} ${usedStack.numberOfComponents()}")
             checkAllStackViews(game)
+        }
+        if (usablePower){
+            nextTurnButton.isVisible = true
+            nextTurnButton.text = "Use Power"
         }
     }
 
@@ -215,6 +275,10 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
                 3 -> flipCard(player2BottomRight.peek())
             }
         }
+    }
+
+    override fun refreshAfterKnock() {
+        nextTurnButton.isVisible = false
     }
 
     private fun initializeStackView(stack: Stack<Card>, stackView: LabeledStackView, cardImageLoader: CardImageLoader) {

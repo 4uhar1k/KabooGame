@@ -18,7 +18,7 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
     fun drawCard(used: Boolean){
         val kaboo = rootService.currentGame
         var usablePower = false
-        val listOfUsablePowers = mutableListOf<String>("QUEEN", "JACK", "TEN", "NINE", "EIGHT", "SEVEN")
+        val listOfUsablePowers = mutableListOf<String>("Q", "J", "10", "9", "8", "7")
         if (kaboo == null){
             throw IllegalStateException("Game not started yet")
         }
@@ -67,7 +67,7 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
         onAllRefreshables { refreshAfterDiscard() }
 
         currentPlayer.hand = null
-
+        rootService.gameService.endTurn()
     }
 
     /**
@@ -230,6 +230,7 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
             throw IllegalStateException("Other player has already knocked")
         currentPlayer.knocked = true
         onAllRefreshables { refreshAfterKnock() }
+        rootService.gameService.endTurn()
     }
 
     /**

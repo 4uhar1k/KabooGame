@@ -135,7 +135,10 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
         if (kaboo.currentPlayer?.knocked == true){
             endGame()
         }
-        onAllRefreshables { refreshAfterEachTurn() }
+        else {
+            onAllRefreshables { refreshAfterEachTurn() }
+        }
+
     }
 
     /**
@@ -162,6 +165,7 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
             player2.name
         else
             "Draw"
+        println(winnerMessage)
         onAllRefreshables { refreshAfterEndGame(winnerMessage) }
         rootService.currentGame = null
         return winnerMessage
