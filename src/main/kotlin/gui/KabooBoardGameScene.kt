@@ -244,13 +244,17 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
 
     override fun refreshAfterDraw(discardable: Boolean, usablePower: Boolean) {
         val game = rootService.currentGame
-        val cardImageLoader = CardImageLoader()
         checkNotNull(game) { "No game found." }
+        val currentPlayer = game.currentPlayer
+        checkNotNull(currentPlayer) {"No current player found."}
+        val currentPlayerHand = currentPlayer.hand
+        checkNotNull(currentPlayerHand) {"No current player's hand card found."}
+        val cardImageLoader = CardImageLoader()
         nextTurnButton.isVisible = false
         if (discardable){
-            game.newStack.push(game.currentPlayer!!.hand!!)
+            game.newStack.push(currentPlayerHand)
 
-            when (game.currentPlayer) {
+            when (currentPlayer) {
                 game.players[0] -> {
                     moveCardView(cardMap.forward(game.newStack.pop()), player1HandCard, true)
                     player1TopLeft.apply { onMouseClicked = {rootService.playerService.swapSelf(DeckPosition.TOP_LEFT)}}
@@ -276,17 +280,15 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
                     player1BottomRight.apply { onMouseClicked = {error("You can't swap other player's card")} }
                 }
             }
-            println("drawed card ${player1HandCard.numberOfComponents()} ${usedStack.numberOfComponents()}")
             checkAllStackViews(game)
         }
         else{
-            game.usedStack.push(game.currentPlayer!!.hand!!)
+            game.usedStack.push(currentPlayerHand)
 
-            when (game.currentPlayer) {
+            when (currentPlayer) {
                 game.players[0] -> moveCardView(cardMap.forward(game.usedStack.pop()), player1HandCard, false)
                 game.players[1] -> moveCardView(cardMap.forward(game.usedStack.pop()), player2HandCard, false)
             }
-            println("drawed card ${player1HandCard.numberOfComponents()} ${usedStack.numberOfComponents()}")
             checkAllStackViews(game)
         }
 
@@ -323,7 +325,6 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
 
     override fun refreshAfterPeakCardPlayer(positionToPeak: DeckPosition, playerToPeak: Player) {
         val game = rootService.currentGame
-
         checkNotNull(game) { "No game found." }
         val player1 = game.players[0]
         val player2 = game.players[1]
@@ -343,10 +344,6 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
                 3 -> flipCard(player2BottomRight.peek())
             }
         }
-        println("Current player: ${game.currentPlayer?.name}")
-        println("ownselected: ${game.currentPlayer?.ownSelected}")
-        println("otherselected: ${game.currentPlayer?.otherSelected}")
-        println("Hand: ${game.currentPlayer?.hand}")
     }
 
     override fun refreshAfterKnock() {
@@ -355,11 +352,13 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
 
     override fun refreshAfterSwapSelf(position: DeckPosition) {
         val game = rootService.currentGame
-
         checkNotNull(game) { "No game found." }
+        val currentPlayer = game.currentPlayer
+        checkNotNull(currentPlayer) {"No current player found."}
+
         val player1 = game.players[0]
         val player2 = game.players[1]
-        if (game.currentPlayer == player1){
+        if (currentPlayer == player1){
             when(position.toInt()){
                 0 -> {
                     moveCardView(player1TopLeft.peek(), usedStack, true)
@@ -408,25 +407,25 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
     override fun refreshAfterSwapOther(ownPosition: DeckPosition, otherPosition: DeckPosition) {
         val game = rootService.currentGame
         checkNotNull(game) { "No game found." }
+        val currentPlayer = game.currentPlayer
+        checkNotNull(currentPlayer) {"No current player found."}
+        val currentPlayerHand = currentPlayer.hand
+        checkNotNull(currentPlayerHand) {"No current player's hand card found."}
         val player1 = game.players[0]
         val player2 = game.players[1]
-        var listOfPositions1 = mutableListOf<CardView>(player1TopLeft.peek(), player1TopRight.peek(),
+        val listOfPositions1 = mutableListOf<CardView>(player1TopLeft.peek(), player1TopRight.peek(),
             player1BottomLeft.peek(), player1BottomRight.peek())
-        var listOfPositions2 = mutableListOf<CardView>(player2TopLeft.peek(), player2TopRight.peek(),
+        val listOfPositions2 = mutableListOf<CardView>(player2TopLeft.peek(), player2TopRight.peek(),
             player2BottomLeft.peek(), player2BottomRight.peek())
-        var listOfStacks1 = mutableListOf<LabeledStackView>(player1TopLeft, player1TopRight, player1BottomLeft, player1BottomRight)
-        var listOfStacks2 = mutableListOf<LabeledStackView>(player2TopLeft, player2TopRight, player2BottomLeft, player2BottomRight)
+        val listOfStacks1 = mutableListOf<LabeledStackView>(player1TopLeft, player1TopRight, player1BottomLeft, player1BottomRight)
+        val listOfStacks2 = mutableListOf<LabeledStackView>(player2TopLeft, player2TopRight, player2BottomLeft, player2BottomRight)
 
         var blindPeek: Boolean = false
-        println("Current player: ${game.currentPlayer?.name}")
-        println("ownselected: ${game.currentPlayer?.ownSelected}")
-        println("otherselected: ${game.currentPlayer?.otherSelected}")
-        println("Hand: ${game.currentPlayer?.hand}")
-        if (game.currentPlayer!!.hand!!.value.toString() == "Q")
+        if (currentPlayerHand.value.toString() == "Q")
             blindPeek = true
-        else if (game.currentPlayer!!.hand!!.value.toString() == "J")
+        else if (currentPlayerHand.value.toString() == "J")
             blindPeek = false
-        if (game.currentPlayer == player1){
+        if (currentPlayer == player1){
             val cardViewToExchange = listOfPositions2[otherPosition.toInt()]
             moveCardView(listOfPositions1[ownPosition.toInt()], listOfStacks2[otherPosition.toInt()], blindPeek)
             moveCardView(cardViewToExchange, listOfStacks1[ownPosition.toInt()], blindPeek)
@@ -499,9 +498,12 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
     override fun refreshAfterChooseCard() {
         val game = rootService.currentGame
         checkNotNull(game) { "No game found." }
-        if (game.currentPlayer!!.ownSelected != DeckPosition.NOT_SELECTED && game.currentPlayer!!.otherSelected != DeckPosition.NOT_SELECTED){
+        val currentPlayer = game.currentPlayer
+        checkNotNull(currentPlayer) {"No current player found."}
+
+        if (currentPlayer.ownSelected != DeckPosition.NOT_SELECTED && currentPlayer.otherSelected != DeckPosition.NOT_SELECTED){
             swapButton.isVisible = true
-            swapButton.apply { onMouseClicked = {rootService.playerService.swapOther(game.currentPlayer!!.ownSelected, game.currentPlayer!!.otherSelected)} }
+            swapButton.apply { onMouseClicked = {rootService.playerService.swapOther(currentPlayer.ownSelected, currentPlayer.otherSelected)} }
         }
 
     }
@@ -509,6 +511,10 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
     private fun checkIfCardFromDeckIsFront(stackView: LabeledStackView, deckPosition: DeckPosition, playerToPeak: Player){
         val game = rootService.currentGame
         checkNotNull(game) { "No game found." }
+        val currentPlayer = game.currentPlayer
+        checkNotNull(currentPlayer) {"No current player found."}
+        val currentPlayerHand = currentPlayer.hand
+        checkNotNull(currentPlayerHand) {"No current player's hand card found."}
         val player1 = game.players[0]
         val player2 = game.players[1]
         if (stackView.peek().currentSide == CardView.CardSide.FRONT){
@@ -521,7 +527,7 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
             listOfOtherPositions.add(player1BottomLeft.peek())
             listOfOtherPositions.add(player1BottomRight.peek())
             listOfOtherPositions.remove(stackView.peek())
-            if (game.currentPlayer!!.ownSelected != DeckPosition.NOT_SELECTED){
+            if (currentPlayer.ownSelected != DeckPosition.NOT_SELECTED){
                 "You have already peaked one card from this deck"
             }
         }
@@ -531,7 +537,7 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
             listOfOtherPositions.add(player2BottomLeft.peek())
             listOfOtherPositions.add(player2BottomRight.peek())
             listOfOtherPositions.remove(stackView.peek())
-            if (game.currentPlayer!!.otherSelected != DeckPosition.NOT_SELECTED){
+            if (currentPlayer.otherSelected != DeckPosition.NOT_SELECTED){
                 "You have already peaked one card from this deck"
             }
         }
@@ -540,10 +546,10 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
                 error("You have already peaked one card from this deck")
             }
         }
-        if (game.currentPlayer!!.hand!!.value.toString() != "J"){
+        if (currentPlayerHand.value.toString() != "J"){
             rootService.playerService.peakCardPlayer(deckPosition, playerToPeak)
         }
-        if (game.currentPlayer!!.hand!!.value.toString() == "Q" || game.currentPlayer!!.hand!!.value.toString() == "J"){
+        if (currentPlayerHand.value.toString() == "Q" || currentPlayerHand.value.toString() == "J"){
             rootService.playerService.chooseCard(deckPosition, playerToPeak)
         }
     }
