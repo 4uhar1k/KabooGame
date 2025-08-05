@@ -67,7 +67,10 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
         onAllRefreshables { refreshAfterDiscard() }
 
         currentPlayer.hand = null
-        rootService.gameService.endTurn()
+        if (kaboo.newStack.size == 0)
+            rootService.gameService.endGame()
+        else
+            rootService.gameService.endTurn()
     }
 
     /**
@@ -126,12 +129,13 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
             otherPlayer = kaboo.players[1]
         else
             otherPlayer = kaboo.players[0]
-        kaboo.usedStack.push(hand)
-        currentPlayer.hand = null
+        //kaboo.usedStack.push(hand)
+
         val cardToChange : Card = currentPlayer.deck[ownPosition.toInt()]
         currentPlayer.deck[ownPosition.toInt()] = otherPlayer.deck[otherPosition.toInt()]
         otherPlayer.deck[otherPosition.toInt()] = cardToChange
         onAllRefreshables { refreshAfterSwapOther(ownPosition, otherPosition) }
+        discard()
     }
 
     /**
@@ -195,21 +199,21 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
         }
         else if (hand.value == CardValue.JACK ){
             onAllRefreshables { refreshAfterUsePower(true,false) }
-            val ownSelectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
-            chooseCard(ownSelectedPosition, currentPlayer)
+            //val ownSelectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
+            //chooseCard(ownSelectedPosition, currentPlayer)
             onAllRefreshables { refreshAfterUsePower(false,true) }
-            val otherSelectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
-            chooseCard(otherSelectedPosition, otherPlayer)
+            //val otherSelectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
+            //chooseCard(otherSelectedPosition, otherPlayer)
         }
         else if (hand.value == CardValue.QUEEN){
             onAllRefreshables { refreshAfterUsePower(true,false) }
-            val ownSelectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
-            chooseCard(ownSelectedPosition, currentPlayer)
-            peakCardPlayer(ownSelectedPosition, currentPlayer)
+            //val ownSelectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
+            //chooseCard(ownSelectedPosition, currentPlayer)
+            //peakCardPlayer(ownSelectedPosition, currentPlayer)
             onAllRefreshables { refreshAfterUsePower(false,true) }
-            val otherSelectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
-            chooseCard(otherSelectedPosition, otherPlayer)
-            peakCardPlayer(otherSelectedPosition, otherPlayer)
+            //val otherSelectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
+            //chooseCard(otherSelectedPosition, otherPlayer)
+            //peakCardPlayer(otherSelectedPosition, otherPlayer)
         }
         else
         {
@@ -315,11 +319,14 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
         if (currentPlayer.ownSelected != DeckPosition.NOT_SELECTED &&
             currentPlayer.otherSelected != DeckPosition.NOT_SELECTED){
             if (currentPlayer.hand?.value == CardValue.JACK){
-                swapOther(currentPlayer.ownSelected, currentPlayer.otherSelected)
-                onAllRefreshables { refreshAfterSwapOther(currentPlayer.ownSelected, currentPlayer.otherSelected) }
+                //swapOther(currentPlayer.ownSelected, currentPlayer.otherSelected)
+                //onAllRefreshables { refreshAfterSwapOther(currentPlayer.ownSelected, currentPlayer.otherSelected) }
+                onAllRefreshables { refreshAfterChooseCard() }
             }
             else if (currentPlayer.hand?.value == CardValue.QUEEN){
                 onAllRefreshables { refreshAfterChooseCard() }
+                //swapOther(currentPlayer.ownSelected, currentPlayer.otherSelected)
+                //onAllRefreshables { refreshAfterSwapOther(currentPlayer.ownSelected, currentPlayer.otherSelected) }
             }
         }
 
