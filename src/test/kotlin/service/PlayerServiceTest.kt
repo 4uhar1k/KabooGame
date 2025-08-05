@@ -220,12 +220,12 @@ class PlayerServiceTest {
      */
     @Test
     fun testChooseCard(){
-        var currentPlayer = rootService.currentGame!!.players[0]
+        rootService.currentGame!!.currentPlayer = rootService.currentGame!!.players[0]
 
-        assertEquals(DeckPosition.NOT_SELECTED, currentPlayer.ownSelected )
-        assertEquals(DeckPosition.NOT_SELECTED, currentPlayer.otherSelected)
+        assertEquals(DeckPosition.NOT_SELECTED, rootService.currentGame!!.currentPlayer!!.ownSelected )
+        assertEquals(DeckPosition.NOT_SELECTED, rootService.currentGame!!.currentPlayer!!.otherSelected)
 
-        rootService.playerService.chooseCard(DeckPosition.TOP_LEFT, currentPlayer)
+        rootService.playerService.chooseCard(DeckPosition.TOP_LEFT, rootService.currentGame!!.currentPlayer!!)
         assertEquals(DeckPosition.TOP_LEFT, rootService.currentGame!!.players[0].ownSelected )
         assertEquals(DeckPosition.NOT_SELECTED, rootService.currentGame!!.players[0].otherSelected)
         rootService.gameService.endGame()
@@ -239,9 +239,9 @@ class PlayerServiceTest {
         rootService.gameService.endGame()
 
         rootService.gameService.addPlayers("Vladimir", "Player2")
-        currentPlayer = rootService.currentGame!!.players[0]
+        rootService.currentGame!!.currentPlayer = rootService.currentGame!!.players[0]
         otherPlayer = rootService.currentGame!!.players[1]
-        rootService.playerService.chooseCard(DeckPosition.TOP_LEFT, currentPlayer)
+        rootService.playerService.chooseCard(DeckPosition.TOP_LEFT, rootService.currentGame!!.currentPlayer!!)
         rootService.playerService.chooseCard(DeckPosition.TOP_LEFT, otherPlayer)
         assertEquals(DeckPosition.TOP_LEFT, rootService.currentGame!!.players[0].ownSelected )
         assertEquals(DeckPosition.TOP_LEFT, rootService.currentGame!!.players[0].otherSelected)

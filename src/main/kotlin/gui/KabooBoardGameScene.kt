@@ -276,8 +276,30 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
             game.usedStack.push(currentPlayerHand)
 
             when (currentPlayer) {
-                game.players[0] -> moveCardView(cardMap.forward(game.usedStack.pop()), player1HandCard, false)
-                game.players[1] -> moveCardView(cardMap.forward(game.usedStack.pop()), player2HandCard, false)
+                game.players[0] -> {
+                    moveCardView(cardMap.forward(game.usedStack.pop()), player1HandCard, false)
+                    player1TopLeft.onMouseClicked = {rootService.playerService.swapSelf(DeckPosition.TOP_LEFT)}
+                    player1TopRight.onMouseClicked = {rootService.playerService.swapSelf(DeckPosition.TOP_RIGHT)}
+                    player1BottomLeft.onMouseClicked = {rootService.playerService.swapSelf(DeckPosition.BOTTOM_LEFT)}
+                    player1BottomRight.onMouseClicked = {rootService.playerService.swapSelf(DeckPosition.BOTTOM_RIGHT)}
+
+                    player2TopLeft.onMouseClicked = {error("You can't swap other player's card")}
+                    player2TopRight.onMouseClicked = {error("You can't swap other player's card")}
+                    player2BottomLeft.onMouseClicked = {error("You can't swap other player's card")}
+                    player2BottomRight.onMouseClicked = {error("You can't swap other player's card")}
+                }
+                game.players[1] -> {
+                    moveCardView(cardMap.forward(game.usedStack.pop()), player2HandCard, false)
+                    player2TopLeft.onMouseClicked = {rootService.playerService.swapSelf(DeckPosition.TOP_LEFT)}
+                    player2TopRight.onMouseClicked = {rootService.playerService.swapSelf(DeckPosition.TOP_RIGHT)}
+                    player2BottomLeft.onMouseClicked = {rootService.playerService.swapSelf(DeckPosition.BOTTOM_LEFT)}
+                    player2BottomRight.onMouseClicked = {rootService.playerService.swapSelf(DeckPosition.BOTTOM_RIGHT)}
+
+                    player1TopLeft.onMouseClicked = {error("You can't swap other player's card")}
+                    player1TopRight.onMouseClicked = {error("You can't swap other player's card")}
+                    player1BottomLeft.onMouseClicked = {error("You can't swap other player's card")}
+                    player1BottomRight.onMouseClicked = {error("You can't swap other player's card")}
+                }
             }
             checkAllStackViews(game)
         }
