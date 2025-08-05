@@ -199,7 +199,9 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
             }
 
         }
-
+        /*val cardImageLoader = CardImageLoader()
+        initializeStackView(game.newStack, newStack, cardImageLoader)
+        initializeStackView(game.usedStack, usedStack, cardImageLoader)*/
 
     }
 
@@ -212,8 +214,30 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
             game.newStack.push(game.currentPlayer!!.hand!!)
 
             when (game.currentPlayer) {
-                game.players[0] -> moveCardView(cardMap.forward(game.newStack.pop()), player1HandCard, true)
-                game.players[1] -> moveCardView(cardMap.forward(game.newStack.pop()), player2HandCard, true)
+                game.players[0] -> {
+                    moveCardView(cardMap.forward(game.newStack.pop()), player1HandCard, true)
+                    player1TopLeft.apply { onMouseClicked = {rootService.playerService.swapSelf(DeckPosition.TOP_LEFT)}}
+                    player1TopRight.apply { onMouseClicked = {rootService.playerService.swapSelf(DeckPosition.TOP_RIGHT)}}
+                    player1BottomLeft.apply { onMouseClicked = {rootService.playerService.swapSelf(DeckPosition.BOTTOM_LEFT)}}
+                    player1BottomRight.apply { onMouseClicked = {rootService.playerService.swapSelf(DeckPosition.BOTTOM_RIGHT)}}
+
+                    player2TopLeft.apply { onMouseClicked = {error("You can't swap other player's card")} }
+                    player2TopRight.apply { onMouseClicked = {error("You can't swap other player's card")} }
+                    player2BottomLeft.apply { onMouseClicked = {error("You can't swap other player's card")} }
+                    player2BottomRight.apply { onMouseClicked = {error("You can't swap other player's card")} }
+                }
+                game.players[1] -> {
+                    moveCardView(cardMap.forward(game.newStack.pop()), player2HandCard, true)
+                    player2TopLeft.apply { onMouseClicked = {rootService.playerService.swapSelf(DeckPosition.TOP_LEFT)}}
+                    player2TopRight.apply { onMouseClicked = {rootService.playerService.swapSelf(DeckPosition.TOP_RIGHT)}}
+                    player2BottomLeft.apply { onMouseClicked = {rootService.playerService.swapSelf(DeckPosition.BOTTOM_LEFT)}}
+                    player2BottomRight.apply { onMouseClicked = {rootService.playerService.swapSelf(DeckPosition.BOTTOM_RIGHT)}}
+
+                    player1TopLeft.apply { onMouseClicked = {error("You can't swap other player's card")} }
+                    player1TopRight.apply { onMouseClicked = {error("You can't swap other player's card")} }
+                    player1BottomLeft.apply { onMouseClicked = {error("You can't swap other player's card")} }
+                    player1BottomRight.apply { onMouseClicked = {error("You can't swap other player's card")} }
+                }
             }
             println("drawed card ${player1HandCard.numberOfComponents()} ${usedStack.numberOfComponents()}")
             checkAllStackViews(game)
@@ -228,6 +252,12 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
             println("drawed card ${player1HandCard.numberOfComponents()} ${usedStack.numberOfComponents()}")
             checkAllStackViews(game)
         }
+
+
+
+
+
+
         if (usablePower){
             nextTurnButton.isVisible = true
             nextTurnButton.text = "Use Power"
@@ -281,6 +311,58 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         nextTurnButton.isVisible = false
     }
 
+    override fun refreshAfterSwapSelf(position: DeckPosition) {
+        val game = rootService.currentGame
+
+        checkNotNull(game) { "No game found." }
+        val player1 = game.players[0]
+        val player2 = game.players[1]
+        if (game.currentPlayer == player1){
+            when(position.toInt()){
+                0 -> {
+                    moveCardView(player1TopLeft.peek(), usedStack, true)
+                    moveCardView(player1HandCard.peek(), player1TopLeft, true)
+                }
+                1 -> {
+                    moveCardView(player1TopRight.peek(), usedStack, true)
+                    moveCardView(player1HandCard.peek(), player1TopRight, true)
+                }
+                2 -> {
+                    moveCardView(player1BottomLeft.peek(), usedStack, true)
+                    moveCardView(player1HandCard.peek(), player1BottomLeft, true)
+                }
+                3 ->  {
+                    moveCardView(player1BottomRight.peek(), usedStack, true)
+                    moveCardView(player1HandCard.peek(), player1BottomRight, true)
+                }
+            }
+        }
+        else{
+            when(position.toInt()){
+                0 -> {
+                    moveCardView(player2TopLeft.peek(), usedStack, true)
+                    moveCardView(player2HandCard.peek(), player2TopLeft, true)
+                }
+                1 -> {
+                    moveCardView(player2TopRight.peek(), usedStack, true)
+                    moveCardView(player2HandCard.peek(), player2TopRight, true)
+                }
+                2 -> {
+                    moveCardView(player2BottomLeft.peek(), usedStack, true)
+                    moveCardView(player2HandCard.peek(), player2BottomLeft, true)
+                }
+                3 ->  {
+                    moveCardView(player2BottomRight.peek(), usedStack, true)
+                    moveCardView(player2HandCard.peek(), player2BottomRight, true)
+                }
+            }
+        }
+        cardMap.clear()
+        val cardImageLoader = CardImageLoader()
+        initializeStackView(game.newStack, newStack, cardImageLoader)
+        initializeStackView(game.usedStack, usedStack, cardImageLoader)
+    }
+
     private fun initializeStackView(stack: Stack<Card>, stackView: LabeledStackView, cardImageLoader: CardImageLoader) {
         stackView.clear()
         stack.peekAll().reversed().forEach { card ->
@@ -292,6 +374,11 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
             )
             stackView.add(cardView)
             cardMap.add(card to cardView)
+        }
+        if (stackView == usedStack){
+            for (card in stackView.components){
+                card.currentSide = CardView.CardSide.FRONT
+            }
         }
     }
 

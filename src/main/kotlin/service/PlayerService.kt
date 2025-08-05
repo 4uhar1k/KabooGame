@@ -93,8 +93,10 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
         }
         kaboo.usedStack.push(currentPlayer.deck[position.toInt()])
         currentPlayer.deck[position.toInt()] = hand
-        currentPlayer.hand = null
+
         onAllRefreshables { refreshAfterSwapSelf(position) }
+        currentPlayer.hand = null
+        rootService.gameService.endTurn()
     }
 
     /**
