@@ -12,7 +12,8 @@ import tools.aqua.bgw.util.Font
  *
  * @param rootService [RootService] instance to access the service methods and entity layer
  */
-class KabooEndGameMenuScene(val rootService: RootService, var winnerMessage: String) : MenuScene(1000,1000), Refreshable {
+class KabooEndGameMenuScene(val rootService: RootService, var winnerMessage: String)
+    : MenuScene(1000,1000), Refreshable {
     private val helloLabel = Label(
         width = 400,
         height = 400,
