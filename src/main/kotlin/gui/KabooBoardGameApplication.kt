@@ -51,9 +51,13 @@ class KabooBoardGameApplication : BoardGameApplication("Kaboo"), Refreshable {
         println("Kaboo Board Game Started!")
     }
 
-    override fun refreshAfterEachTurn() {
-        //this.showMenuScene(kabooNextPlayerMenuScene)
+    override fun refreshAfterDiscard() {
+        this.showMenuScene(kabooNextPlayerMenuScene)
         //this.hideMenuScene()
+    }
+
+    override fun refreshAfterEachTurn() {
+        this.hideMenuScene()
     }
 
     override fun refreshAfterEndGame(winnerMessage: String) {

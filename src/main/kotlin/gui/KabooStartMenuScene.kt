@@ -11,8 +11,10 @@ import tools.aqua.bgw.util.Font
 import tools.aqua.bgw.visual.ColorVisual
 
 /**
- * Represents an example scene with a greeting label.
- * This scene has a default size of 1920x1080 pixels and a green background.
+ * [MenuScene] that is displayed at the beginning of the game. You can write your players' names
+ * and start the game after clicking the button.
+ *
+ * @param rootService [RootService] instance to access the service methods and entity layer
  */
 class KabooStartMenuScene(val rootService: RootService) : MenuScene(1000,1000), Refreshable {
     //val rootService: RootService = RootService()

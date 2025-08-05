@@ -6,7 +6,12 @@ import tools.aqua.bgw.components.uicomponents.Button
 import tools.aqua.bgw.components.uicomponents.Label
 import tools.aqua.bgw.core.MenuScene
 import tools.aqua.bgw.util.Font
-
+/**
+ * [MenuScene] that is displayed when the game is finished. It shows the final result of the game.
+ * Also, there is a button: for starting a new game with the same players' names.
+ *
+ * @param rootService [RootService] instance to access the service methods and entity layer
+ */
 class KabooEndGameMenuScene(val rootService: RootService, var winnerMessage: String) : MenuScene(1000,1000), Refreshable {
     private val helloLabel = Label(
         width = 400,

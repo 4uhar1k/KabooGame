@@ -123,8 +123,11 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
     fun endTurn(){
         val kaboo = rootService.currentGame
         checkNotNull(kaboo)
-        checkNotNull(kaboo.currentPlayer)
-        if (kaboo.currentPlayer!!.hand != null){
+        val currentPlayer = kaboo.currentPlayer
+        checkNotNull(currentPlayer)
+        val currentPlayerHand = currentPlayer.hand
+
+        if (currentPlayerHand != null){
             rootService.playerService.discard()
             return
         }
@@ -132,11 +135,11 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
             kaboo.currentPlayer = player2
         else
             kaboo.currentPlayer = player1
-        if (kaboo.currentPlayer!!.viewedCards == false){
+        if (!currentPlayer.viewedCards){
             rootService.playerService.peakCardsFirstRound()
         }
 
-        if (kaboo.currentPlayer?.knocked == true){
+        if (currentPlayer.knocked){
             endGame()
         }
         else {
