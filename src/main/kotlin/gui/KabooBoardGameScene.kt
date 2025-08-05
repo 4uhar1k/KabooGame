@@ -172,19 +172,55 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
             player1TopRight.peek(), player1BottomLeft.peek(), player1BottomRight.peek())
         val listOfCardViews2 = mutableListOf<CardView>(player2TopLeft.peek(),
             player2TopRight.peek(), player2BottomLeft.peek(), player2BottomRight.peek())
+
         if (currentPlayer == game.players[1]){
-            for (card in listOfCardViews1){
-                if (card.currentSide == CardView.CardSide.FRONT){
-                    flipCard(card)
+            if (player1BottomLeft.peek().currentSide == CardView.CardSide.FRONT &&
+                player1BottomRight.peek().currentSide == CardView.CardSide.FRONT)
+            {
+                for (card in listOfCardViews1){
+                    if (card.currentSide == CardView.CardSide.FRONT){
+                        flipCard(card)
+                    }
                 }
             }
+            else{
+                for (card in listOfCardViews1){
+                    if (card.currentSide == CardView.CardSide.FRONT){
+                        flipCard(card)
+                    }
+                }
+                for (card in listOfCardViews2){
+                    if (card.currentSide == CardView.CardSide.FRONT){
+                        flipCard(card)
+                    }
+                }
+            }
+
+
         }
         else {
-            for (card in listOfCardViews2){
-                if (card.currentSide == CardView.CardSide.FRONT){
-                    flipCard(card)
+            if (player2BottomLeft.peek().currentSide == CardView.CardSide.FRONT &&
+                player2BottomRight.peek().currentSide == CardView.CardSide.FRONT){
+                for (card in listOfCardViews2){
+                    if (card.currentSide == CardView.CardSide.FRONT){
+                        flipCard(card)
+                    }
                 }
             }
+            else
+            {
+                for (card in listOfCardViews1){
+                    if (card.currentSide == CardView.CardSide.FRONT){
+                        flipCard(card)
+                    }
+                }
+                for (card in listOfCardViews2){
+                    if (card.currentSide == CardView.CardSide.FRONT){
+                        flipCard(card)
+                    }
+                }
+            }
+
         }
         if (player1BottomLeft.peek().currentSide != CardView.CardSide.FRONT &&
         player1BottomRight.peek().currentSide != CardView.CardSide.FRONT &&
@@ -261,6 +297,7 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         if (usablePower){
             nextTurnButton.isVisible = true
             nextTurnButton.text = "Use Power"
+            nextTurnButton.apply { onMouseClicked = {rootService.playerService.usePower()}}
         }
     }
 
@@ -361,6 +398,74 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         val cardImageLoader = CardImageLoader()
         initializeStackView(game.newStack, newStack, cardImageLoader)
         initializeStackView(game.usedStack, usedStack, cardImageLoader)
+    }
+
+    override fun refreshAfterUsePower(highlightDeckPlayer1: Boolean, highlightDeckPlayer2: Boolean) {
+        val game = rootService.currentGame
+        checkNotNull(game) { "No game found." }
+        val player1 = game.players[0]
+        val player2 = game.players[1]
+        if (highlightDeckPlayer1 && !highlightDeckPlayer2){
+            player1TopLeft.apply { onMouseClicked = {checkIfCardFromDeckIsFront(this, DeckPosition.TOP_LEFT, player1)}}
+            player1TopRight.apply { onMouseClicked = {checkIfCardFromDeckIsFront(this, DeckPosition.TOP_RIGHT, player1)}}
+            player1BottomLeft.apply { onMouseClicked = {checkIfCardFromDeckIsFront(this, DeckPosition.BOTTOM_LEFT, player1)}}
+            player1BottomRight.apply { onMouseClicked = {checkIfCardFromDeckIsFront(this, DeckPosition.BOTTOM_RIGHT, player1)}}
+
+            player2TopLeft.apply { onMouseClicked = {error("You can't see this card")} }
+            player2TopRight.apply { onMouseClicked = {error("You can't see this card")} }
+            player2BottomLeft.apply { onMouseClicked = {error("You can't see this card")} }
+            player2BottomRight.apply { onMouseClicked = {error("You can't see this card")} }
+
+            nextTurnButton.text = "Next turn"
+            nextTurnButton.onMouseClicked = {rootService.gameService.endTurn()}
+            //rootService.playerService.peakCardPlayer(, player1)
+        }
+        else if (!highlightDeckPlayer1 && highlightDeckPlayer2){
+            player2TopLeft.apply { onMouseClicked = {checkIfCardFromDeckIsFront(this, DeckPosition.TOP_LEFT, player2)}}
+            player2TopRight.apply { onMouseClicked = {checkIfCardFromDeckIsFront(this, DeckPosition.TOP_RIGHT, player2)}}
+            player2BottomLeft.apply { onMouseClicked = {checkIfCardFromDeckIsFront(this, DeckPosition.BOTTOM_LEFT, player2)}}
+            player2BottomRight.apply { onMouseClicked = {checkIfCardFromDeckIsFront(this, DeckPosition.BOTTOM_RIGHT, player2)}}
+
+            player1TopLeft.apply { onMouseClicked = {error("You can't see this card")} }
+            player1TopRight.apply { onMouseClicked = {error("You can't see this card")} }
+            player1BottomLeft.apply { onMouseClicked = {error("You can't see this card")} }
+            player1BottomRight.apply { onMouseClicked = {error("You can't see this card")} }
+
+            nextTurnButton.text = "Next turn"
+            nextTurnButton.onMouseClicked = {rootService.gameService.endTurn()}
+        }
+    }
+
+    private fun checkIfCardFromDeckIsFront(stackView: LabeledStackView, deckPosition: DeckPosition, playerToPeak: Player){
+        val game = rootService.currentGame
+        checkNotNull(game) { "No game found." }
+        val player1 = game.players[0]
+        val player2 = game.players[1]
+        if (stackView.peek().currentSide == CardView.CardSide.FRONT){
+            error("This card is already in front")
+        }
+        var listOfOtherPositions = mutableListOf<CardView>()
+        if (playerToPeak == player1){
+            listOfOtherPositions.add(player1TopLeft.peek())
+            listOfOtherPositions.add(player1TopRight.peek())
+            listOfOtherPositions.add(player1BottomLeft.peek())
+            listOfOtherPositions.add(player1BottomRight.peek())
+            listOfOtherPositions.remove(stackView.peek())
+        }
+        else{
+            listOfOtherPositions.add(player2TopLeft.peek())
+            listOfOtherPositions.add(player2TopRight.peek())
+            listOfOtherPositions.add(player2BottomLeft.peek())
+            listOfOtherPositions.add(player2BottomRight.peek())
+            listOfOtherPositions.remove(stackView.peek())
+        }
+        for (i in 0..2){
+            if (listOfOtherPositions[i].currentSide == CardView.CardSide.FRONT){
+                error("You have already peaked one card from this deck")
+            }
+        }
+        rootService.playerService.peakCardPlayer(deckPosition, playerToPeak)
+
     }
 
     private fun initializeStackView(stack: Stack<Card>, stackView: LabeledStackView, cardImageLoader: CardImageLoader) {

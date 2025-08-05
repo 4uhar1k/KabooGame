@@ -169,18 +169,29 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
         else
             otherPlayer = kaboo.players[0]
         if (hand.value == CardValue.SEVEN || hand.value == CardValue.EIGHT){
-            onAllRefreshables { refreshAfterUsePower(true,false) }
-            val selectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
-            chooseCard(selectedPosition, currentPlayer)
-            peakCardPlayer(selectedPosition, currentPlayer)
-            onAllRefreshables { refreshAfterPeakCardPlayer(selectedPosition, currentPlayer) }
+            if (kaboo.currentPlayer == kaboo.players[0]){
+                onAllRefreshables { refreshAfterUsePower(true,false) }
+            }
+            else{
+                onAllRefreshables { refreshAfterUsePower(false,true) }
+            }
+
+            //val selectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
+            //chooseCard(selectedPosition, currentPlayer)
+            //peakCardPlayer(selectedPosition, currentPlayer)
+            //onAllRefreshables { refreshAfterPeakCardPlayer(selectedPosition, currentPlayer) }
         }
         else if (hand.value == CardValue.NINE || hand.value == CardValue.TEN){
-            onAllRefreshables { refreshAfterUsePower(false,true) }
-            val selectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
-            chooseCard(selectedPosition, otherPlayer)
-            peakCardPlayer(selectedPosition, otherPlayer)
-            onAllRefreshables { refreshAfterPeakCardPlayer(selectedPosition, otherPlayer) }
+            if (kaboo.currentPlayer == kaboo.players[0]){
+                onAllRefreshables { refreshAfterUsePower(false,true) }
+            }
+            else{
+                onAllRefreshables { refreshAfterUsePower(true,false) }
+            }
+            //val selectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
+            //chooseCard(selectedPosition, otherPlayer)
+            //peakCardPlayer(selectedPosition, otherPlayer)
+            //onAllRefreshables { refreshAfterPeakCardPlayer(selectedPosition, otherPlayer) }
         }
         else if (hand.value == CardValue.JACK ){
             onAllRefreshables { refreshAfterUsePower(true,false) }

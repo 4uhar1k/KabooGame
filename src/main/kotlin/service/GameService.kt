@@ -122,16 +122,20 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
      */
     fun endTurn(){
         val kaboo = rootService.currentGame
-        if (kaboo == null){
-            throw IllegalStateException("Game not started yet")
+        checkNotNull(kaboo)
+        checkNotNull(kaboo.currentPlayer)
+        if (kaboo.currentPlayer!!.hand != null){
+            rootService.playerService.discard()
+            return
         }
         if (kaboo.currentPlayer == player1)
             kaboo.currentPlayer = player2
         else
             kaboo.currentPlayer = player1
-        if (kaboo.currentPlayer?.viewedCards == false){
+        if (kaboo.currentPlayer!!.viewedCards == false){
             rootService.playerService.peakCardsFirstRound()
         }
+
         if (kaboo.currentPlayer?.knocked == true){
             endGame()
         }
