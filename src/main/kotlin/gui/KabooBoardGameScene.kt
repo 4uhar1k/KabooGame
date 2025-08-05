@@ -101,29 +101,7 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
             }
         }
     }
-    private val usePowerButton = Button(
-        width = 350, height = 75,
-        posX = 785, posY = 550,
-        text = "Use Power",
-        font = Font(size = 38)
-    ).apply {
-        visual = ColorVisual(255, 255, 255)
-        onMouseClicked = {
 
-            }
-        }
-
-    private val knockButton = Button(
-        width = 350, height = 75,
-        posX = 785, posY = 650,
-        text = "Knock",
-        font = Font(size = 38)
-    ).apply {
-        visual = ColorVisual(255, 255, 255)
-        onMouseClicked = {
-
-            }
-        }
 
     private val swapButton = Button(
         width = 350, height = 75,
@@ -159,8 +137,9 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         player2HandCard.clear()
         initializePlayersDecks(game.players[0].deck, game.players[0], cardImageLoader)
         initializePlayersDecks(game.players[1].deck, game.players[1], cardImageLoader)
-       // usePowerButton.isVisible = false
-        //knockButton.isVisible = false
+        nextTurnButton.isVisible = true
+        nextTurnButton.text = "Next turn"
+        nextTurnButton.onMouseClicked = {rootService.gameService.endTurn()}
         swapButton.isVisible = false
     }
 

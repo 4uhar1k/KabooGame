@@ -16,18 +16,20 @@ class KabooEndGameMenuScene(val rootService: RootService, var winnerMessage: Str
         text = winnerMessage,
         font = Font(size = 30)
     )
+    val game = rootService.currentGame
 
     private val readyButton = Button(
         width = 450, height = 100,
         posX = 275, posY = 650,
         text = "Start new game",
         font = Font(size = 48)
-    )/*.apply {
-        visual = ColorVisual(136, 221, 136)
+    ).apply {
+        //visual = ColorVisual(136, 221, 136)
         onMouseClicked = {
-            KabooNextPlayerMenuScene
+            checkNotNull(game) {"The game is already over"}
+            rootService.gameService.addPlayers(game.players[0].name, game.players[1].name)
         }
-    }*/
+    }
 
     init {
         addComponents(helloLabel, readyButton)
