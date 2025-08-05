@@ -427,12 +427,12 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         else if (game.currentPlayer!!.hand!!.value.toString() == "J")
             blindPeek = false
         if (game.currentPlayer == player1){
-            val cardViewToExchange = listOfPositions2[ownPosition.toInt()]
+            val cardViewToExchange = listOfPositions2[otherPosition.toInt()]
             moveCardView(listOfPositions1[ownPosition.toInt()], listOfStacks2[otherPosition.toInt()], blindPeek)
             moveCardView(cardViewToExchange, listOfStacks1[ownPosition.toInt()], blindPeek)
         }
         else{
-            val cardViewToExchange = listOfPositions1[ownPosition.toInt()]
+            val cardViewToExchange = listOfPositions1[otherPosition.toInt()]
             moveCardView(listOfPositions2[ownPosition.toInt()], listOfStacks1[otherPosition.toInt()], blindPeek)
             moveCardView(cardViewToExchange, listOfStacks2[ownPosition.toInt()], blindPeek)
         }
