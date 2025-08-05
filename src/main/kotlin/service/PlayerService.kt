@@ -25,7 +25,7 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
         if (kaboo.currentPlayer == null){
             throw IllegalStateException("Game not started yet")
         }
-
+        check(kaboo.currentPlayer!!.hand == null){ throw IllegalStateException("You can't draw two cards")}
         if (used){
             if (kaboo.usedStack.size == 0)
                 IllegalStateException("Used stack is empty")
