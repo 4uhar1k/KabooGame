@@ -34,7 +34,9 @@ class KabooNextPlayerMenuScene(val rootService: RootService) : MenuScene(1000,10
             rootService.gameService.endTurn()
         }
     }
-
+    /**
+     * Initializes the scene by setting the background color and adding the label.
+     */
     init {
         addComponents(helloLabel, readyButton)
     }

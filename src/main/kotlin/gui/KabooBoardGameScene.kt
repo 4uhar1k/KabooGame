@@ -101,7 +101,9 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
 
 
     private val cardMap: BidirectionalMap<Card, CardView> = BidirectionalMap()
-
+    /**
+     * Initializes the scene by setting the background color and adding the label.
+     */
     init {
         background = ColorVisual(108, 168, 59)
         addComponents(player1HandCard, player2HandCard, usedStack, newStack,

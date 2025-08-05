@@ -36,7 +36,9 @@ class KabooEndGameMenuScene(val rootService: RootService, var winnerMessage: Str
             rootService.gameService.addPlayers(game.players[0].name, game.players[1].name)
         }
     }
-
+    /**
+     * Initializes the scene by setting the background color and adding the label.
+     */
     init {
         addComponents(helloLabel, readyButton)
     }
