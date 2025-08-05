@@ -17,28 +17,26 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
      */
     fun drawCard(used: Boolean){
         val kaboo = rootService.currentGame
-        checkNotNull(kaboo)
-        val currentPlayer = kaboo.currentPlayer
-        checkNotNull(currentPlayer)
-
-
         var usablePower = false
         val listOfUsablePowers = mutableListOf<String>("Q", "J", "10", "9", "8", "7")
-
-        check(currentPlayer.hand == null){ throw IllegalStateException("You can't draw two cards")}
+        if (kaboo == null){
+            throw IllegalStateException("Game not started yet")
+        }
+        if (kaboo.currentPlayer == null){
+            throw IllegalStateException("Game not started yet")
+        }
+        check(kaboo.currentPlayer!!.hand == null){ throw IllegalStateException("You can't draw two cards")}
         if (used){
             if (kaboo.usedStack.size == 0)
                 IllegalStateException("Used stack is empty")
-            currentPlayer.hand = kaboo.usedStack.pop()
+            kaboo.currentPlayer?.hand = kaboo.usedStack.pop()
 
         }
         else
         {
-            currentPlayer.hand = kaboo.newStack.pop()
+            kaboo.currentPlayer?.hand = kaboo.newStack.pop()
         }
-        val currentPlayerHand = currentPlayer.hand
-        checkNotNull(currentPlayerHand)
-        if (listOfUsablePowers.any { it == currentPlayerHand.value.toString() }){
+        if (listOfUsablePowers.any { it == kaboo.currentPlayer?.hand?.value.toString() }){
             usablePower = true
         }
         onAllRefreshables { refreshAfterDraw(!used, usablePower) }
@@ -71,8 +69,8 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
         currentPlayer.hand = null
         if (kaboo.newStack.size == 0)
             rootService.gameService.endGame()
-        //else
-            //rootService.gameService.endTurn()
+        else
+            rootService.gameService.endTurn()
     }
 
     /**
