@@ -46,20 +46,34 @@ class KabooBoardGameApplication : BoardGameApplication("Kaboo"), Refreshable {
         this.showGameScene(kabooBoardGameScene)
         this.showMenuScene(kabooStartMenuScene, 0)
     }
+
+    /**
+     * Hides [KabooStartMenuScene]
+     */
     override fun refreshAfterStartGame() {
         this.hideMenuScene()
         println("Kaboo Board Game Started!")
     }
 
+    /**
+     * Shows [KabooNextPlayerMenuScene]
+     */
     override fun refreshAfterDiscard() {
         this.showMenuScene(kabooNextPlayerMenuScene)
         //this.hideMenuScene()
     }
 
+    /**
+     * Hides [KabooNextPlayerMenuScene]
+     */
     override fun refreshAfterEachTurn() {
         this.hideMenuScene()
     }
 
+    /**
+     * Shows [KabooEndGameMenuScene] with a message with winner of the game
+     * @param winnerMessage - name of a winner or "Draw"
+     */
     override fun refreshAfterEndGame(winnerMessage: String) {
         if (winnerMessage!="Draw"){
             kabooEndGameMenuScene = KabooEndGameMenuScene(rootService, "${winnerMessage} is a winner!")
