@@ -102,7 +102,11 @@ class KabooBoardGameApplication : BoardGameApplication("Kaboo"), Refreshable {
             kabooEndGameMenuScene = KabooEndGameMenuScene(rootService, "It's a draw!")
 
         }
+        kabooEndGameMenuScene.viewCardsButton.onMouseClicked = {viewCards()}
         this.showMenuScene(kabooEndGameMenuScene)
+    }
+    fun viewCards(){
+        this.hideMenuScene()
     }
 
 }

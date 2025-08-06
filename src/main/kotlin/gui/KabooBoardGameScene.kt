@@ -598,6 +598,17 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
 
     }
 
+    override fun refreshAfterEndGame(winnerMessage: String) {
+        flipCard(player1TopLeft.peek())
+        flipCard(player1TopRight.peek())
+        flipCard(player1BottomLeft.peek())
+        flipCard(player1BottomRight.peek())
+        flipCard(player2TopLeft.peek())
+        flipCard(player2TopRight.peek())
+        flipCard(player2BottomLeft.peek())
+        flipCard(player2BottomRight.peek())
+    }
+
     /**
      * The method restricts, that player can flip more than one card from one deck
      * @param stackView Selected card of player as LabeledStackView

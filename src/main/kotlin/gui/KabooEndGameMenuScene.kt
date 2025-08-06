@@ -36,10 +36,16 @@ class KabooEndGameMenuScene(val rootService: RootService, var winnerMessage: Str
             rootService.gameService.addPlayers(game.players[0].name, game.players[1].name)
         }
     }
+    public val viewCardsButton = Button(
+        width = 450, height = 100,
+        posX = 275, posY = 850,
+        text = "View cards",
+        font = Font(size = 48)
+    )
     /**
      * Initializes the scene by setting the background color and adding the label.
      */
     init {
-        addComponents(helloLabel, readyButton)
+        addComponents(helloLabel, readyButton, viewCardsButton)
     }
 }
