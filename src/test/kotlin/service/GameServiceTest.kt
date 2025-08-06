@@ -1,6 +1,9 @@
 package service
 import kotlin.test.*
 import entity.*
+
+import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.assertTimeout
 import tools.aqua.bgw.util.Stack
 
 /**
@@ -8,14 +11,17 @@ import tools.aqua.bgw.util.Stack
  */
 class GameServiceTest {
     private lateinit var rootService: RootService
-
+    private lateinit var refreshableTest: RefreshableTest
     /**
      * Little setup before tests: we create the game
      */
     @BeforeTest
     fun setUp(){
         rootService = RootService()
+        refreshableTest = RefreshableTest()
+        rootService.addRefreshable(refreshableTest)
         rootService.gameService.addPlayers("Vladimir", "Player2")
+
     }
 
     /**
@@ -37,6 +43,9 @@ class GameServiceTest {
             rootService.gameService.endGame()
         }
         rootService.gameService.addPlayers("Vladimir", "Player2")
+        assertTrue(refreshableTest.refreshAfterAddPlayerCalled)
+        assertTrue(refreshableTest.refreshAfterStartGameCalled)
+        refreshableTest.reset()
         assertNotNull(rootService.currentGame)
         assertEquals(2, rootService.currentGame?.players?.size)
         assertNotNull(rootService.currentGame!!.currentPlayer)
@@ -87,6 +96,7 @@ class GameServiceTest {
     fun testAddPlayers(){
         assertEquals("Vladimir", rootService.currentGame!!.players[0].name)
         assertEquals("Player2", rootService.currentGame!!.players[1].name)
+
     }
 
     /**
@@ -111,6 +121,8 @@ class GameServiceTest {
         val player2 = rootService.currentGame!!.players[1]
         if (rootService.currentGame!!.currentPlayer == player1){
             rootService.gameService.endTurn()
+            assertTrue(refreshableTest.refreshAfterEachTurnCalled)
+            refreshableTest.reset()
             assertEquals(player2, rootService.currentGame!!.currentPlayer)
             rootService.gameService.endTurn()
             assertEquals(player1, rootService.currentGame!!.currentPlayer)
@@ -164,5 +176,7 @@ class GameServiceTest {
         rootService.currentGame!!.players[0].deck = mutableListOf(card1, card2, card3, card4)
         rootService.currentGame!!.players[1].deck = mutableListOf(card5, card6, card7, card8)
         assertEquals("Draw", rootService.gameService.endGame())
+        assertTrue(refreshableTest.refreshAfterEndGameCalled)
+        refreshableTest.reset()
     }
 }

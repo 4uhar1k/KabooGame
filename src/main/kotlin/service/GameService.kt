@@ -12,7 +12,6 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
     var player1 = Player()
     var player2 = Player()
     var otherPlayer = Player()
-    var playerWantsToKnock = false // should be updated by interactions in gui
     public var kaboo = Kaboo()
     /**
      * [startGame] is a method, which is needed to start the game
@@ -104,16 +103,6 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
         if (kaboo.currentPlayer?.knocked == true || kaboo.newStack.size == 0){
             endGame()
         }
-        if (!otherPlayer.knocked && playerWantsToKnock){
-            rootService.playerService.knock()
-        }
-        else
-        {
-            val used = false // should be updated by interactions in gui
-            rootService.playerService.drawCard(used)
-            //onAllRefreshables { refreshAfterGameMove(!playerWantsToKnock, !used) }
-        }
-
     }
 
     /**

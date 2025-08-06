@@ -7,12 +7,15 @@ import kotlin.test.*
  */
 class PlayerServiceTest {
     private lateinit var rootService: RootService
+    private lateinit var refreshableTest: RefreshableTest
     /**
      * Little setup before tests: we create the game
      */
     @BeforeTest
     fun setUp(){
         rootService = RootService()
+        refreshableTest = RefreshableTest()
+        rootService.addRefreshable(refreshableTest)
         rootService.gameService.addPlayers("Vladimir", "Player2")
     }
 
@@ -109,8 +112,15 @@ class PlayerServiceTest {
         }
         rootService.playerService.drawCard(false)
         rootService.playerService.discard()
+        assertTrue(refreshableTest.refreshAfterDiscardCalled)
+        refreshableTest.reset()
         assertEquals(1, rootService.currentGame!!.usedStack.size)
         assertEquals(null, rootService.currentGame!!.currentPlayer!!.hand)
+        rootService.playerService.drawCard(false)
+        rootService.currentGame!!.newStack.clear()
+        rootService.playerService.discard()
+        assertTrue(refreshableTest.refreshAfterEndGameCalled)
+        refreshableTest.reset()
     }
 
     /**
@@ -126,6 +136,8 @@ class PlayerServiceTest {
         val handCard = rootService.currentGame!!.currentPlayer!!.hand
         val cardToChange = rootService.currentGame!!.currentPlayer!!.deck[DeckPosition.TOP_LEFT.toInt()]
         rootService.playerService.swapSelf(DeckPosition.TOP_LEFT)
+        assertTrue(refreshableTest.refreshAfterSwapSelfCalled)
+        refreshableTest.reset()
         assertEquals(handCard, rootService.currentGame!!.currentPlayer!!.deck[DeckPosition.TOP_LEFT.toInt()])
         assertEquals(cardToChange, rootService.currentGame!!.usedStack.peek())
         assertEquals(null, rootService.currentGame!!.currentPlayer!!.hand)
@@ -136,6 +148,9 @@ class PlayerServiceTest {
      */
     @Test
     fun testSwapOther(){
+        assertFails{
+            rootService.playerService.swapOther(DeckPosition.TOP_LEFT, DeckPosition.TOP_LEFT)
+        }
         rootService.playerService.drawCard(false)
         rootService.currentGame!!.currentPlayer = rootService.currentGame!!.players[0]
         rootService.currentGame!!.currentPlayer!!.hand = Card(CardSuit.DIAMONDS, CardValue.TEN)
@@ -145,6 +160,8 @@ class PlayerServiceTest {
         val prevOwnCard = rootService.currentGame!!.players[0].deck[DeckPosition.TOP_LEFT.toInt()]
         val prevOtherCard = rootService.currentGame!!.players[1].deck[DeckPosition.TOP_RIGHT.toInt()]
         rootService.playerService.swapOther(DeckPosition.TOP_LEFT, DeckPosition.TOP_RIGHT)
+        assertTrue(refreshableTest.refreshAfterSwapOtherCalled)
+        refreshableTest.reset()
         assertEquals(prevOwnCard, rootService.currentGame!!.players[1].deck[DeckPosition.TOP_RIGHT.toInt()])
         assertEquals(prevOtherCard, rootService.currentGame!!.players[0].deck[DeckPosition.TOP_LEFT.toInt()])
     }
@@ -184,6 +201,8 @@ class PlayerServiceTest {
         assertFails { rootService.playerService.knock() }
         otherPlayer.knocked = false
         rootService.playerService.knock()
+        assertTrue(refreshableTest.refreshAfterKnockCalled)
+        refreshableTest.reset()
         if (rootService.currentGame!!.currentPlayer!! == rootService.currentGame!!.players[0]){
             otherPlayer = rootService.currentGame!!.players[1]
         }
@@ -195,6 +214,16 @@ class PlayerServiceTest {
 
 
 
+    }
+
+    /**
+     * tests, if refreshAfterPeakCardPlayer() is called in the method
+     */
+    @Test
+    fun testPeakCardPlayer(){
+        rootService.playerService.peakCardPlayer(DeckPosition.TOP_LEFT, rootService.currentGame!!.players[0])
+        assertTrue(refreshableTest.refreshAfterPeakCardPlayerCalled)
+        refreshableTest.reset()
     }
 
     /**
@@ -237,9 +266,21 @@ class PlayerServiceTest {
         rootService.gameService.addPlayers("Vladimir", "Player2")
         rootService.currentGame!!.currentPlayer = rootService.currentGame!!.players[0]
         otherPlayer = rootService.currentGame!!.players[1]
+        rootService.currentGame!!.currentPlayer!!.hand = Card(CardSuit.DIAMONDS, CardValue.QUEEN)
         rootService.playerService.chooseCard(DeckPosition.TOP_LEFT, rootService.currentGame!!.currentPlayer!!)
         rootService.playerService.chooseCard(DeckPosition.TOP_LEFT, otherPlayer)
         assertEquals(DeckPosition.TOP_LEFT, rootService.currentGame!!.players[0].ownSelected )
         assertEquals(DeckPosition.TOP_LEFT, rootService.currentGame!!.players[0].otherSelected)
+        assertTrue(refreshableTest.refreshAfterChooseCardCalled)
+        refreshableTest.reset()
+
+        rootService.currentGame!!.currentPlayer!!.hand = Card(CardSuit.DIAMONDS, CardValue.JACK)
+        rootService.playerService.chooseCard(DeckPosition.TOP_LEFT, rootService.currentGame!!.currentPlayer!!)
+        rootService.playerService.chooseCard(DeckPosition.TOP_LEFT, otherPlayer)
+        assertEquals(DeckPosition.TOP_LEFT, rootService.currentGame!!.players[0].ownSelected )
+        assertEquals(DeckPosition.TOP_LEFT, rootService.currentGame!!.players[0].otherSelected)
+        assertTrue(refreshableTest.refreshAfterChooseCardCalled)
+        refreshableTest.reset()
+
     }
 }
