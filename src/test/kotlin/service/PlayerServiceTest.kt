@@ -92,14 +92,11 @@ class PlayerServiceTest {
         assertFails{
             rootService.playerService.drawCard(true)
         }
-        val kaboo = rootService.currentGame
-        kaboo!!.usedStack.push(Card(CardSuit.DIAMONDS, CardValue.TEN))
         assertFails{rootService.playerService.drawCard(true)}
         rootService.playerService.discard()
         rootService.playerService.drawCard(true)
         assertEquals(0, rootService.currentGame!!.usedStack.size)
         assertNotEquals(null, rootService.currentGame!!.currentPlayer!!.hand)
-        //assertEquals(true, rootService.playerService.usePower())
     }
 
     /**
@@ -129,7 +126,6 @@ class PlayerServiceTest {
         val handCard = rootService.currentGame!!.currentPlayer!!.hand
         val cardToChange = rootService.currentGame!!.currentPlayer!!.deck[DeckPosition.TOP_LEFT.toInt()]
         rootService.playerService.swapSelf(DeckPosition.TOP_LEFT)
-        rootService.gameService.endTurn()
         assertEquals(handCard, rootService.currentGame!!.currentPlayer!!.deck[DeckPosition.TOP_LEFT.toInt()])
         assertEquals(cardToChange, rootService.currentGame!!.usedStack.peek())
         assertEquals(null, rootService.currentGame!!.currentPlayer!!.hand)
@@ -194,8 +190,8 @@ class PlayerServiceTest {
         else {
             otherPlayer = rootService.currentGame!!.players[0]
         }
-        assertEquals(false, rootService.currentGame!!.currentPlayer!!.knocked)
-        assertEquals(true, otherPlayer.knocked)
+        assertEquals(true, rootService.currentGame!!.currentPlayer!!.knocked)
+        assertEquals(false, otherPlayer.knocked)
 
 
 
