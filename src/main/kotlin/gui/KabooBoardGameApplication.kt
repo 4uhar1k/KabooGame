@@ -58,7 +58,7 @@ class KabooBoardGameApplication : BoardGameApplication("Kaboo"), Refreshable {
     /**
      * Shows [KabooNextPlayerMenuScene]
      */
-    override fun refreshAfterDiscard() {
+    override fun refreshAfterGameMove(canKnock: Boolean, canTakeUsedCard: Boolean) {
         this.showMenuScene(kabooNextPlayerMenuScene)
         //this.hideMenuScene()
     }

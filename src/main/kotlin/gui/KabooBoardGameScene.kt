@@ -12,6 +12,7 @@ import entity.*
 import tools.aqua.bgw.components.uicomponents.Button
 import tools.aqua.bgw.util.BidirectionalMap
 import tools.aqua.bgw.util.Stack
+import javax.swing.text.DefaultHighlighter
 import kotlin.collections.get
 import kotlin.text.clear
 /**
@@ -27,7 +28,10 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
     //val rootService: RootService = RootService()
 
 
-    private val player1HandCard = LabeledStackView(posX = 195, posY = 100 )
+    private val player1HandCard = LabeledStackView(posX = 195, posY = 100 ).apply{
+
+
+    }
     private val player2HandCard = LabeledStackView(posX = 1595, posY = 100)
 
     private val player1TopLeft = LabeledStackView(posX = 145, posY = 520 )
@@ -81,7 +85,7 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         visual = ColorVisual(255, 255, 255)
         onMouseClicked = {
             rootService.currentGame?.let {
-                rootService.gameService.endTurn()
+                rootService.gameService.openNextPlayerWindow()
             }
         }
     }
@@ -130,7 +134,7 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         initializePlayersDecks(game.players[1].deck, game.players[1], cardImageLoader)
         nextTurnButton.isVisible = true
         nextTurnButton.text = "Next turn"
-        nextTurnButton.onMouseClicked = {rootService.gameService.endTurn()}
+        nextTurnButton.onMouseClicked = {rootService.gameService.openNextPlayerWindow()}
         swapButton.isVisible = false
     }
 
@@ -280,7 +284,7 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
             }
         }
         checkAllStackViews(game)
-        if (usablePower){
+        if (usablePower && discardable){
             nextTurnButton.isVisible = true
             nextTurnButton.text = "Use Power"
             nextTurnButton.onMouseClicked = {rootService.playerService.usePower()}
@@ -497,7 +501,7 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
 
 
             nextTurnButton.text = "Next turn"
-            nextTurnButton.onMouseClicked = {rootService.gameService.endTurn()}
+            nextTurnButton.onMouseClicked = {rootService.playerService.discard()}
             //rootService.playerService.peakCardPlayer(, player1)
         }
         else if (!highlightDeckPlayer1 && highlightDeckPlayer2){
@@ -530,7 +534,7 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
 
 
             nextTurnButton.text = "Next turn"
-            nextTurnButton.onMouseClicked = {rootService.gameService.endTurn()}
+            nextTurnButton.onMouseClicked = {rootService.gameService.openNextPlayerWindow()}
         }
 
     }

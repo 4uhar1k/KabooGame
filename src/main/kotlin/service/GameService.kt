@@ -111,7 +111,7 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
         {
             val used = false // should be updated by interactions in gui
             rootService.playerService.drawCard(used)
-            onAllRefreshables { refreshAfterGameMove(!playerWantsToKnock, !used) }
+            //onAllRefreshables { refreshAfterGameMove(!playerWantsToKnock, !used) }
         }
 
     }
@@ -126,7 +126,6 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
         checkNotNull(kaboo.currentPlayer)
         if (kaboo.currentPlayer!!.hand != null){
             rootService.playerService.discard()
-            return
         }
         if (kaboo.currentPlayer == player1)
             kaboo.currentPlayer = player2
@@ -141,6 +140,20 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
         }
         else {
             onAllRefreshables { refreshAfterEachTurn() }
+        }
+
+    }
+    fun openNextPlayerWindow(){
+        val kaboo = rootService.currentGame
+        if (kaboo!!.currentPlayer == player1)
+            otherPlayer = player2
+        else
+            otherPlayer = player1
+        if (otherPlayer.knocked){
+            endGame()
+        }
+        else {
+            onAllRefreshables { refreshAfterGameMove(false, false) }
         }
 
     }

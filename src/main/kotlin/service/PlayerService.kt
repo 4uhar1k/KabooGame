@@ -70,7 +70,7 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
         if (kaboo.newStack.size == 0)
             rootService.gameService.endGame()
         else
-            rootService.gameService.endTurn()
+            rootService.gameService.openNextPlayerWindow()
     }
 
     /**
@@ -99,7 +99,7 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
 
         onAllRefreshables { refreshAfterSwapSelf(position) }
         currentPlayer.hand = null
-        rootService.gameService.endTurn()
+        rootService.gameService.openNextPlayerWindow()
     }
 
     /**
@@ -247,7 +247,7 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
             throw IllegalStateException("Other player has already knocked")
         currentPlayer.knocked = true
         onAllRefreshables { refreshAfterKnock() }
-        rootService.gameService.endTurn()
+        rootService.gameService.openNextPlayerWindow()
     }
 
     /**
