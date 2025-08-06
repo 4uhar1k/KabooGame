@@ -134,7 +134,8 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
         if (kaboo.currentPlayer!!.viewedCards == false){
             rootService.playerService.peakCardsFirstRound()
         }
-
+        kaboo.currentPlayer!!.ownSelected = DeckPosition.NOT_SELECTED
+        kaboo.currentPlayer!!.otherSelected = DeckPosition.NOT_SELECTED
         if (kaboo.currentPlayer?.knocked == true){
             endGame()
         }

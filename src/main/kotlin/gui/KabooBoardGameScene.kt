@@ -323,6 +323,10 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
     override fun refreshAfterPeakCardPlayer(positionToPeak: DeckPosition, playerToPeak: Player) {
         val game = rootService.currentGame
         checkNotNull(game) { "No game found." }
+        val currentPlayer = game.currentPlayer
+        checkNotNull(currentPlayer) {"No current player found."}
+        val currentPlayerHand = currentPlayer.hand
+        //checkNotNull(currentPlayerHand) {"No current player's hand card found."}
         val player1 = game.players[0]
         val player2 = game.players[1]
         if (playerToPeak == player1){
@@ -340,6 +344,11 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
                 2 -> flipCard(player2BottomLeft.peek())
                 3 -> flipCard(player2BottomRight.peek())
             }
+        }
+        if (currentPlayerHand?.value.toString() != "Q"){
+            nextTurnButton.isVisible = true
+            nextTurnButton.text = "Next turn"
+            nextTurnButton.onMouseClicked = {rootService.gameService.openNextPlayerWindow()}
         }
     }
 
@@ -471,6 +480,7 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         checkNotNull(currentPlayerHand) {"No current player's hand card found."}
         val player1 = game.players[0]
         val player2 = game.players[1]
+        nextTurnButton.isVisible = false
         if (highlightDeckPlayer1 && !highlightDeckPlayer2){
             player1TopLeft.onMouseClicked = {checkIfCardFromDeckIsFront(player1TopLeft,
                 DeckPosition.TOP_LEFT, player1)}
@@ -500,8 +510,7 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
             }
 
 
-            nextTurnButton.text = "Next turn"
-            nextTurnButton.onMouseClicked = {rootService.playerService.discard()}
+
             //rootService.playerService.peakCardPlayer(, player1)
         }
         else if (!highlightDeckPlayer1 && highlightDeckPlayer2){
@@ -523,7 +532,7 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
                     DeckPosition.BOTTOM_LEFT, player1)}
                 player1BottomRight.onMouseClicked = {checkIfCardFromDeckIsFront(player1BottomRight,
                     DeckPosition.BOTTOM_RIGHT, player1)}
-                swapButton.isVisible = true
+
             }
             else {
                 player1TopLeft.onMouseClicked = {error("You can't see this card")}
@@ -533,8 +542,8 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
             }
 
 
-            nextTurnButton.text = "Next turn"
-            nextTurnButton.onMouseClicked = {rootService.gameService.openNextPlayerWindow()}
+           // nextTurnButton.text = "Next turn"
+            //nextTurnButton.onMouseClicked = {rootService.gameService.openNextPlayerWindow()}
         }
 
     }
@@ -552,6 +561,9 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
 
         if (currentPlayer.ownSelected != DeckPosition.NOT_SELECTED &&
             currentPlayer.otherSelected != DeckPosition.NOT_SELECTED){
+            nextTurnButton.isVisible = true
+            nextTurnButton.text = "Next turn"
+            nextTurnButton.onMouseClicked = {rootService.gameService.openNextPlayerWindow()}
             swapButton.isVisible = true
             swapButton.onMouseClicked = {rootService.playerService.swapOther(currentPlayer.ownSelected,
                 currentPlayer.otherSelected)}
