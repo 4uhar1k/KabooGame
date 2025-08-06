@@ -23,7 +23,7 @@ class KabooBoardGameApplication : BoardGameApplication("Kaboo"), Refreshable {
      */
     private val kabooStartMenuScene = KabooStartMenuScene(rootService)
     private val kabooBoardGameScene = KabooBoardGameScene(rootService)
-    private val kabooNextPlayerMenuScene = KabooNextPlayerMenuScene(rootService)
+    private var kabooNextPlayerMenuScene = KabooNextPlayerMenuScene(rootService, "aa")
     private var kabooEndGameMenuScene = KabooEndGameMenuScene(rootService, "bb")
 
     /**
@@ -53,12 +53,20 @@ class KabooBoardGameApplication : BoardGameApplication("Kaboo"), Refreshable {
     override fun refreshAfterStartGame() {
         this.hideMenuScene()
         println("Kaboo Board Game Started!")
+
     }
 
     /**
      * Shows [KabooNextPlayerMenuScene]
      */
     override fun refreshAfterGameMove(canKnock: Boolean, canTakeUsedCard: Boolean) {
+        if (rootService.currentGame!!.currentPlayer == rootService.currentGame!!.players[0]){
+            kabooNextPlayerMenuScene = KabooNextPlayerMenuScene(rootService, rootService.currentGame!!.players[1].name)
+        }
+        else{
+            kabooNextPlayerMenuScene = KabooNextPlayerMenuScene(rootService, rootService.currentGame!!.players[0].name)
+
+        }
         this.showMenuScene(kabooNextPlayerMenuScene)
         //this.hideMenuScene()
     }
@@ -68,6 +76,18 @@ class KabooBoardGameApplication : BoardGameApplication("Kaboo"), Refreshable {
      */
     override fun refreshAfterEachTurn() {
         this.hideMenuScene()
+    }
+
+    override fun refreshAfterAddPlayers() {
+        if (rootService.currentGame!!.currentPlayer == rootService.currentGame!!.players[0]){
+            kabooNextPlayerMenuScene = KabooNextPlayerMenuScene(rootService, rootService.currentGame!!.players[0].name)
+        }
+        else{
+            kabooNextPlayerMenuScene = KabooNextPlayerMenuScene(rootService, rootService.currentGame!!.players[1].name)
+
+        }
+        kabooNextPlayerMenuScene.readyButton.onMouseClicked = {refreshAfterStartGame()}
+        this.showMenuScene(kabooNextPlayerMenuScene)
     }
 
     /**

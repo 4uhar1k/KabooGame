@@ -13,17 +13,18 @@ import tools.aqua.bgw.visual.ColorVisual
  *
  * @param rootService [RootService] instance to access the service methods and entity layer
  */
-class KabooNextPlayerMenuScene(val rootService: RootService) : MenuScene(1000,1000), Refreshable{
+class KabooNextPlayerMenuScene(val rootService: RootService, val nextPlayerName: String) :
+    MenuScene(1000,1000), Refreshable{
     private val helloLabel = Label(
         width = 400,
         height = 400,
         posX = 300,
         posY = 200,
-        text = "Turn of ${rootService.currentGame?.currentPlayer?.name ?: "next player"}",
+        text = "Turn of $nextPlayerName",
         font = Font(size = 30)
     )
 
-    private val readyButton = Button(
+    public val readyButton = Button(
         width = 450, height = 100,
         posX = 275, posY = 650,
         text = "Ready",
