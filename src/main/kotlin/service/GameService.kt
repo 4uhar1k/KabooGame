@@ -120,17 +120,18 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
             kaboo.currentPlayer = player2
         else
             kaboo.currentPlayer = player1
-        if (kaboo.currentPlayer!!.viewedCards == false){
-            rootService.playerService.peakCardsFirstRound()
-        }
-        kaboo.currentPlayer!!.ownSelected = DeckPosition.NOT_SELECTED
-        kaboo.currentPlayer!!.otherSelected = DeckPosition.NOT_SELECTED
         if (kaboo.currentPlayer?.knocked == true){
             endGame()
         }
         else {
             onAllRefreshables { refreshAfterEachTurn() }
         }
+        if (kaboo.currentPlayer!!.viewedCards == false){
+            rootService.playerService.peakCardsFirstRound()
+        }
+        kaboo.currentPlayer!!.ownSelected = DeckPosition.NOT_SELECTED
+        kaboo.currentPlayer!!.otherSelected = DeckPosition.NOT_SELECTED
+
 
     }
 

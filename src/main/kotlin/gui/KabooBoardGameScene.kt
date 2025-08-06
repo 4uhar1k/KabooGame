@@ -63,9 +63,9 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
 
     private val newStack = LabeledStackView(posX = 800, posY = 100 ).apply {
         onMouseClicked = {
-            rootService.currentGame?.let { game ->
-                rootService.playerService.drawCard(false)
-            }
+            //rootService.currentGame?.let { game ->
+                //rootService.playerService.drawCard(false)
+            //}
         }
     }
 
@@ -177,15 +177,39 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         val game = rootService.currentGame
         checkNotNull(game)
         val currentPlayer = game.currentPlayer
+        checkNotNull(currentPlayer) {"No current player found."}
         val listOfCardViews1 = mutableListOf<CardView>(player1TopLeft.peek(),
             player1TopRight.peek(), player1BottomLeft.peek(), player1BottomRight.peek())
         val listOfCardViews2 = mutableListOf<CardView>(player2TopLeft.peek(),
             player2TopRight.peek(), player2BottomLeft.peek(), player2BottomRight.peek())
+        /*if (game.players[0].viewedCards){
+            if (player1TopLeft.peek().currentSide == CardView.CardSide.FRONT)
+                flipCard(player1TopLeft.peek())
+            if (player1TopRight.peek().currentSide == CardView.CardSide.FRONT)
+                flipCard(player1TopRight.peek())
+            if (player1BottomLeft.peek().currentSide == CardView.CardSide.FRONT)
+                flipCard(player1BottomLeft.peek())
+            if (player1BottomRight.peek().currentSide == CardView.CardSide.FRONT)
+                flipCard(player1BottomRight.peek())
+        }
+        else if (game.players[1].viewedCards){
+            if (player2TopLeft.peek().currentSide == CardView.CardSide.FRONT)
+                flipCard(player2TopLeft.peek())
+            if (player2TopRight.peek().currentSide == CardView.CardSide.FRONT)
+                flipCard(player2TopRight.peek())
+            if (player2BottomLeft.peek().currentSide == CardView.CardSide.FRONT)
+                flipCard(player2BottomLeft.peek())
+            if (player2BottomRight.peek().currentSide == CardView.CardSide.FRONT)
+                flipCard(player2BottomRight.peek())
+        }*/
+        if (currentPlayer.viewedCards){
+            newStack.onMouseClicked = {rootService.playerService.drawCard(false)}
+
+        }
 
         if (currentPlayer == game.players[1]){
             if (player1BottomLeft.peek().currentSide == CardView.CardSide.FRONT &&
-                player1BottomRight.peek().currentSide == CardView.CardSide.FRONT)
-            {
+                player1BottomRight.peek().currentSide == CardView.CardSide.FRONT){
                 for (card in listOfCardViews1){
                     if (card.currentSide == CardView.CardSide.FRONT){
                         flipCard(card)
@@ -193,6 +217,7 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
                 }
             }
             else{
+                //newStack.onMouseClicked = {rootService.playerService.drawCard(false)}
                 for (card in listOfCardViews1){
                     if (card.currentSide == CardView.CardSide.FRONT){
                         flipCard(card)
@@ -218,6 +243,7 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
             }
             else
             {
+                //newStack.onMouseClicked = {rootService.playerService.drawCard(false)}
                 for (card in listOfCardViews1){
                     if (card.currentSide == CardView.CardSide.FRONT){
                         flipCard(card)
