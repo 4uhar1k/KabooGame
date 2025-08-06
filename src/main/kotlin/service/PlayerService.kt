@@ -19,12 +19,8 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
         val kaboo = rootService.currentGame
         var usablePower = false
         val listOfUsablePowers = mutableListOf<String>("Q", "J", "10", "9", "8", "7")
-        if (kaboo == null){
-            throw IllegalStateException("Game not started yet")
-        }
-        if (kaboo.currentPlayer == null){
-            throw IllegalStateException("Game not started yet")
-        }
+        checkNotNull(kaboo){throw IllegalStateException("Game not started yet")}
+        checkNotNull(kaboo.currentPlayer)
         check(kaboo.currentPlayer!!.hand == null){ throw IllegalStateException("You can't draw two cards")}
         if (used){
             if (kaboo.usedStack.size == 0)
@@ -50,19 +46,11 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
      */
     fun discard(){
         val kaboo = rootService.currentGame
-        if (kaboo == null){
-            throw IllegalStateException("Game not started yet")
-        }
+        checkNotNull(kaboo){throw IllegalStateException("Game not started yet") }
         val currentPlayer = kaboo.currentPlayer
-        if (currentPlayer == null)
-        {
-            throw IllegalStateException("There is no current player in this game")
-        }
+        checkNotNull (currentPlayer){ throw IllegalStateException("There is no current player in this game") }
         val hand = currentPlayer.hand
-
-        if (hand == null){
-            throw IllegalStateException("No hand card")
-        }
+        checkNotNull(hand)
         kaboo.usedStack.push(hand)
         onAllRefreshables { refreshAfterDiscard() }
 
@@ -81,19 +69,11 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
      */
     fun swapSelf(position: DeckPosition){
         val kaboo = rootService.currentGame
-        if (kaboo == null) {
-            throw IllegalStateException("Game not started yet")
-        }
+        checkNotNull(kaboo){throw IllegalStateException("Game not started yet") }
         val currentPlayer = kaboo.currentPlayer
-        if (currentPlayer == null)
-        {
-            throw IllegalStateException("There is no current player in this game")
-        }
+        checkNotNull (currentPlayer){ throw IllegalStateException("There is no current player in this game") }
         val hand = currentPlayer.hand
-        if (hand == null)
-        {
-            throw IllegalStateException("There is no card on player's hand")
-        }
+        checkNotNull(hand)
         kaboo.usedStack.push(currentPlayer.deck[position.toInt()])
         currentPlayer.deck[position.toInt()] = hand
 
@@ -111,19 +91,11 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
      */
     fun swapOther(ownPosition: DeckPosition, otherPosition: DeckPosition){
         val kaboo = rootService.currentGame
-        if (kaboo == null) {
-            throw IllegalStateException("Game not started yet")
-        }
+        checkNotNull(kaboo){throw IllegalStateException("Game not started yet") }
         val currentPlayer = kaboo.currentPlayer
-        if (currentPlayer == null)
-        {
-            throw IllegalStateException("There is no current player in this game")
-        }
+        checkNotNull (currentPlayer){ throw IllegalStateException("There is no current player in this game") }
         val hand = currentPlayer.hand
-        if (hand == null)
-        {
-            throw IllegalStateException("There is no card on player's hand")
-        }
+        checkNotNull(hand)
         var otherPlayer = Player()
         if (kaboo.currentPlayer == kaboo.players[0])
             otherPlayer = kaboo.players[1]
@@ -153,20 +125,11 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
      */
     fun usePower(){
         val kaboo = rootService.currentGame
-        if (kaboo == null){
-            throw IllegalStateException("Game not started yet")
-        }
+        checkNotNull(kaboo){throw IllegalStateException("Game not started yet") }
         val currentPlayer = kaboo.currentPlayer
-        if (currentPlayer == null)
-        {
-            throw IllegalStateException("There is no current player in this game")
-        }
+        checkNotNull (currentPlayer){ throw IllegalStateException("There is no current player in this game") }
         val hand = currentPlayer.hand
-
-        if (hand == null)
-        {
-            throw IllegalStateException("There is no card on player's hand")
-        }
+        checkNotNull(hand)
         var otherPlayer = Player()
         if (kaboo.currentPlayer == kaboo.players[0])
             otherPlayer = kaboo.players[1]
@@ -179,11 +142,6 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
             else{
                 onAllRefreshables { refreshAfterUsePower(false,true) }
             }
-
-            //val selectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
-            //chooseCard(selectedPosition, currentPlayer)
-            //peakCardPlayer(selectedPosition, currentPlayer)
-            //onAllRefreshables { refreshAfterPeakCardPlayer(selectedPosition, currentPlayer) }
         }
         else if (hand.value == CardValue.NINE || hand.value == CardValue.TEN){
             if (kaboo.currentPlayer == kaboo.players[0]){
@@ -192,28 +150,14 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
             else{
                 onAllRefreshables { refreshAfterUsePower(true,false) }
             }
-            //val selectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
-            //chooseCard(selectedPosition, otherPlayer)
-            //peakCardPlayer(selectedPosition, otherPlayer)
-            //onAllRefreshables { refreshAfterPeakCardPlayer(selectedPosition, otherPlayer) }
         }
         else if (hand.value == CardValue.JACK ){
             onAllRefreshables { refreshAfterUsePower(true,false) }
-            //val ownSelectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
-            //chooseCard(ownSelectedPosition, currentPlayer)
             onAllRefreshables { refreshAfterUsePower(false,true) }
-            //val otherSelectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
-            //chooseCard(otherSelectedPosition, otherPlayer)
         }
         else if (hand.value == CardValue.QUEEN){
             onAllRefreshables { refreshAfterUsePower(true,false) }
-            //val ownSelectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
-            //chooseCard(ownSelectedPosition, currentPlayer)
-            //peakCardPlayer(ownSelectedPosition, currentPlayer)
             onAllRefreshables { refreshAfterUsePower(false,true) }
-            //val otherSelectedPosition : DeckPosition = DeckPosition.TOP_LEFT // to identify with gui
-            //chooseCard(otherSelectedPosition, otherPlayer)
-            //peakCardPlayer(otherSelectedPosition, otherPlayer)
         }
         else
         {
@@ -230,14 +174,9 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
      */
     fun knock(){
         val kaboo = rootService.currentGame
-        if (kaboo == null){
-            throw IllegalStateException("Game not started yet")
-        }
+        checkNotNull(kaboo){throw IllegalStateException("Game not started yet") }
         val currentPlayer = kaboo.currentPlayer
-        if (currentPlayer == null)
-        {
-            throw IllegalStateException("There is no current player in this game")
-        }
+        checkNotNull (currentPlayer){ throw IllegalStateException("There is no current player in this game") }
         var otherPlayer = Player()
         if (kaboo.currentPlayer == kaboo.players[0])
             otherPlayer = kaboo.players[1]
@@ -268,14 +207,9 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
      */
     fun peakCardsFirstRound(){
         val kaboo = rootService.currentGame
-        if (kaboo == null){
-            throw IllegalStateException("Game not started yet")
-        }
+        checkNotNull(kaboo){throw IllegalStateException("Game not started yet") }
         val currentPlayer = kaboo.currentPlayer
-        if (currentPlayer == null)
-        {
-            throw IllegalStateException("There is no current player in this game")
-        }
+        checkNotNull (currentPlayer){ throw IllegalStateException("There is no current player in this game") }
         if (!currentPlayer.viewedCards){
             peakCardPlayer(DeckPosition.BOTTOM_LEFT, currentPlayer)
             peakCardPlayer(DeckPosition.BOTTOM_RIGHT, currentPlayer)
@@ -300,14 +234,9 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
      */
     fun chooseCard(chosenCardPosition: DeckPosition, cardOfPlayer: Player){
         val kaboo = rootService.currentGame
-        if (kaboo == null){
-            throw IllegalStateException("Game not started yet")
-        }
+        checkNotNull(kaboo){throw IllegalStateException("Game not started yet") }
         val currentPlayer = kaboo.currentPlayer
-        if (currentPlayer == null)
-        {
-            throw IllegalStateException("There is no current player in this game")
-        }
+        checkNotNull (currentPlayer){ throw IllegalStateException("There is no current player in this game") }
 
         if (cardOfPlayer == currentPlayer){
             currentPlayer.ownSelected = chosenCardPosition

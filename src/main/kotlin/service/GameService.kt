@@ -144,6 +144,10 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
         }
 
     }
+
+    /**
+     * The method calls the [gui.KabooNextPlayerMenuScene]
+     */
     fun openNextPlayerWindow(){
         val kaboo = rootService.currentGame
         if (kaboo!!.currentPlayer == player1)
