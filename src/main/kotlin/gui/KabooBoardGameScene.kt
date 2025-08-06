@@ -34,15 +34,32 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
     }
     private val player2HandCard = LabeledStackView(posX = 1595, posY = 100)
 
-    private val player1TopLeft = LabeledStackView(posX = 145, posY = 520 )
-    private val player1TopRight = LabeledStackView(posX = 345, posY = 520)
-    private val player1BottomLeft = LabeledStackView(posX = 145, posY = 800 )
-    private val player1BottomRight = LabeledStackView(posX = 345, posY = 800)
+    private val player1TopLeft = LabeledStackView(posX = 145, posY = 450 )
+    private val player1TopRight = LabeledStackView(posX = 345, posY = 450)
+    private val player1BottomLeft = LabeledStackView(posX = 145, posY = 730 )
+    private val player1BottomRight = LabeledStackView(posX = 345, posY = 730)
 
-    private val player2TopLeft = LabeledStackView(posX = 1445, posY = 520 )
-    private val player2TopRight = LabeledStackView(posX = 1645, posY = 520)
-    private val player2BottomLeft = LabeledStackView(posX = 1445, posY = 800 )
-    private val player2BottomRight = LabeledStackView(posX = 1645, posY = 800)
+    private val player2TopLeft = LabeledStackView(posX = 1445, posY = 450 )
+    private val player2TopRight = LabeledStackView(posX = 1645, posY = 450)
+    private val player2BottomLeft = LabeledStackView(posX = 1445, posY = 730 )
+    private val player2BottomRight = LabeledStackView(posX = 1645, posY = 730)
+
+    private val player1NameLabel = Label(
+        width = 400,
+        height = 100,
+        posX = 125,
+        posY = 980,
+        text = "player1",
+        font = Font(size = 38)
+    )
+    private val player2NameLabel = Label(
+        width = 400,
+        height = 100,
+        posX = 1425,
+        posY = 980,
+        text = "player2",
+        font = Font(size = 38)
+    )
 
     private val newStack = LabeledStackView(posX = 800, posY = 100 ).apply {
         onMouseClicked = {
@@ -113,7 +130,7 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         addComponents(player1HandCard, player2HandCard, usedStack, newStack,
             player1TopLeft, player1TopRight, player1BottomLeft, player1BottomRight,
             player2TopLeft, player2TopRight, player2BottomLeft, player2BottomRight,
-            nextTurnButton, swapButton)
+            nextTurnButton, swapButton, player1NameLabel, player2NameLabel)
     }
 
     /**
@@ -136,6 +153,16 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         nextTurnButton.text = "Next turn"
         nextTurnButton.onMouseClicked = {rootService.gameService.openNextPlayerWindow()}
         swapButton.isVisible = false
+    }
+
+    override fun refreshAfterAddPlayers() {
+        val game = rootService.currentGame
+        //checkNotNull(game)
+        if (game != null){
+            player1NameLabel.text = game.players[0].name
+            player2NameLabel.text = game.players[1].name
+        }
+
     }
 
     /**
