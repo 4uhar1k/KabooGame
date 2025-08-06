@@ -174,12 +174,31 @@ class PlayerServiceTest {
     fun testUsePower(){
         assertFails { rootService.currentGame!!.currentPlayer!!.hand = Card(CardSuit.DIAMONDS, CardValue.TWO)
             rootService.playerService.usePower() }
-
+        rootService.currentGame!!.currentPlayer = rootService.currentGame!!.players[0]
         rootService.currentGame!!.currentPlayer!!.hand = Card(CardSuit.DIAMONDS, CardValue.SEVEN)
         rootService.playerService.usePower()
+        assertTrue(refreshableTest.refreshAfterUsePowerTrueFalseCalled)
+        refreshableTest.reset()
+
         assertEquals(DeckPosition.NOT_SELECTED, rootService.currentGame!!.currentPlayer!!.ownSelected)
         assertEquals(DeckPosition.NOT_SELECTED, rootService.currentGame!!.currentPlayer!!.otherSelected)
-        rootService.gameService.endGame()
+        //rootService.gameService.endGame()
+        rootService.currentGame!!.currentPlayer!!.hand = Card(CardSuit.DIAMONDS, CardValue.NINE)
+        rootService.playerService.usePower()
+        assertTrue(refreshableTest.refreshAfterUsePowerFalseTrueCalled)
+        refreshableTest.reset()
+
+        rootService.currentGame!!.currentPlayer!!.hand = Card(CardSuit.DIAMONDS, CardValue.JACK)
+        rootService.playerService.usePower()
+        assertTrue(refreshableTest.refreshAfterUsePowerTrueFalseCalled)
+        assertTrue(refreshableTest.refreshAfterUsePowerFalseTrueCalled)
+        refreshableTest.reset()
+
+        rootService.currentGame!!.currentPlayer!!.hand = Card(CardSuit.DIAMONDS, CardValue.QUEEN)
+        rootService.playerService.usePower()
+        assertTrue(refreshableTest.refreshAfterUsePowerTrueFalseCalled)
+        assertTrue(refreshableTest.refreshAfterUsePowerFalseTrueCalled)
+        refreshableTest.reset()
 
 
     }

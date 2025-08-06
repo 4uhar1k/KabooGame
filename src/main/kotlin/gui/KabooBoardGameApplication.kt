@@ -105,6 +105,10 @@ class KabooBoardGameApplication : BoardGameApplication("Kaboo"), Refreshable {
         kabooEndGameMenuScene.viewCardsButton.onMouseClicked = {viewCards()}
         this.showMenuScene(kabooEndGameMenuScene)
     }
+
+    /**
+     * the method is needed to close [KabooEndGameMenuScene] and players are able to view both cards
+     */
     fun viewCards(){
         this.hideMenuScene()
     }
