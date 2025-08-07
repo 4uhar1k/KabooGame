@@ -490,7 +490,7 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         val cardImageLoader = CardImageLoader()
         initializeStackView(game.newStack, newStack, cardImageLoader)
         initializeStackView(game.usedStack, usedStack, cardImageLoader)
-        game.log = "${currentPlayer.name} has swapped his card on position ${position.toInt()+1}"
+        game.log = "${currentPlayer.name} has swapped his card on position $position"
     }
 
     /**
@@ -637,7 +637,8 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
             currentPlayer.otherSelected != DeckPosition.NOT_SELECTED){
             nextTurnButton.isVisible = true
             nextTurnButton.text = "Next turn"
-            nextTurnButton.onMouseClicked = {rootService.gameService.openNextPlayerWindow(); game.log = "${currentPlayer.name} has discarded the card"}
+            nextTurnButton.onMouseClicked = {rootService.gameService.openNextPlayerWindow();
+                game.log = "${currentPlayer.name} has discarded the card"}
             swapButton.isVisible = true
             swapButton.onMouseClicked = {rootService.playerService.swapOther(currentPlayer.ownSelected,
                 currentPlayer.otherSelected); game.log = "${currentPlayer.name} swapped your card on position " +
@@ -669,10 +670,6 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
             logLabel.text = "$winnerMessage is a winner!"
         else
             logLabel.text = "It's a draw!"
-    }
-
-    private fun startNewGame(){
-
     }
 
     /**
