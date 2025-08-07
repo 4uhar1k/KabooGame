@@ -10,6 +10,7 @@ import tools.aqua.bgw.visual.ColorVisual
 import kotlin.text.clear
 import entity.*
 import tools.aqua.bgw.components.uicomponents.Button
+import tools.aqua.bgw.core.Color
 import tools.aqua.bgw.util.BidirectionalMap
 import tools.aqua.bgw.util.Stack
 import javax.swing.text.DefaultHighlighter
@@ -51,7 +52,8 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         posX = 125,
         posY = 980,
         text = "player1",
-        font = Font(size = 38)
+        font = Font(size = 38),
+
     )
     private val player2NameLabel = Label(
         width = 400,
@@ -157,6 +159,17 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
     override fun refreshAfterStartGame() {
         val game = rootService.currentGame
         checkNotNull(game)
+        val currentPlayer = game.currentPlayer
+        checkNotNull(currentPlayer)
+        if (currentPlayer == game.players[1]){
+            player2NameLabel.font = Font(size = 38, color = Color.RED)
+            player1NameLabel.font = Font(size = 38, color = Color.BLACK)
+        }
+        else{
+            player1NameLabel.font = Font(size = 38, color = Color.RED)
+            player2NameLabel.font = Font(size = 38, color = Color.BLACK)
+        }
+
         cardMap.clear()
         val cardImageLoader = CardImageLoader()
 
@@ -211,6 +224,8 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         }
 
         if (currentPlayer == game.players[1]){
+            player2NameLabel.font = Font(size = 38, color = Color.RED)
+            player1NameLabel.font = Font(size = 38, color = Color.BLACK)
             if (player1BottomLeft.peek().currentSide == CardView.CardSide.FRONT &&
                 player1BottomRight.peek().currentSide == CardView.CardSide.FRONT){
                 for (card in listOfCardViews1){
@@ -236,6 +251,8 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
 
         }
         else {
+            player1NameLabel.font = Font(size = 38, color = Color.RED)
+            player2NameLabel.font = Font(size = 38, color = Color.BLACK)
             if (player2BottomLeft.peek().currentSide == CardView.CardSide.FRONT &&
                 player2BottomRight.peek().currentSide == CardView.CardSide.FRONT){
                 for (card in listOfCardViews2){
@@ -645,6 +662,8 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
     }
 
     override fun refreshAfterEndGame(winnerMessage: String) {
+        player2NameLabel.font = Font(size = 38, color = Color.BLACK)
+        player1NameLabel.font = Font(size = 38, color = Color.BLACK)
         if (player1TopLeft.peek().currentSide== CardView.CardSide.BACK)
             flipCard(player1TopLeft.peek())
         if (player1TopRight.peek().currentSide== CardView.CardSide.BACK)
