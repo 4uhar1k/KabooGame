@@ -625,14 +625,22 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
     }
 
     override fun refreshAfterEndGame(winnerMessage: String) {
-        flipCard(player1TopLeft.peek())
-        flipCard(player1TopRight.peek())
-        flipCard(player1BottomLeft.peek())
-        flipCard(player1BottomRight.peek())
-        flipCard(player2TopLeft.peek())
-        flipCard(player2TopRight.peek())
-        flipCard(player2BottomLeft.peek())
-        flipCard(player2BottomRight.peek())
+        if (player1TopLeft.peek().currentSide== CardView.CardSide.BACK)
+            flipCard(player1TopLeft.peek())
+        if (player1TopRight.peek().currentSide== CardView.CardSide.BACK)
+            flipCard(player1TopRight.peek())
+        if (player1BottomLeft.peek().currentSide== CardView.CardSide.BACK)
+            flipCard(player1BottomLeft.peek())
+        if (player1BottomRight.peek().currentSide== CardView.CardSide.BACK)
+            flipCard(player1BottomRight.peek())
+        if (player2TopLeft.peek().currentSide== CardView.CardSide.BACK)
+            flipCard(player2TopLeft.peek())
+        if (player2TopRight.peek().currentSide== CardView.CardSide.BACK)
+            flipCard(player2TopRight.peek())
+        if (player2BottomLeft.peek().currentSide== CardView.CardSide.BACK)
+            flipCard(player2BottomLeft.peek())
+        if (player2BottomRight.peek().currentSide== CardView.CardSide.BACK)
+            flipCard(player2BottomRight.peek())
     }
 
     /**
