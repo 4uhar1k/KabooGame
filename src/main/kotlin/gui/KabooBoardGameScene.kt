@@ -287,7 +287,6 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         checkNotNull(currentPlayer) {"No current player found."}
         val currentPlayerHand = currentPlayer.hand
         checkNotNull(currentPlayerHand) {"No current player's hand card found."}
-        val cardImageLoader = CardImageLoader()
         nextTurnButton.isVisible = false
         if (discardable){
             game.newStack.push(currentPlayerHand)
@@ -554,7 +553,7 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         val player1 = game.players[0]
         val player2 = game.players[1]
         nextTurnButton.isVisible = false
-        if (highlightDeckPlayer1 && !highlightDeckPlayer2){
+        if (currentPlayerHand.value.toString() == "Q" || currentPlayerHand.value.toString() == "J") {
             player1TopLeft.onMouseClicked = {checkIfCardFromDeckIsFront(player1TopLeft,
                 DeckPosition.TOP_LEFT, player1)}
             player1TopRight.onMouseClicked = {checkIfCardFromDeckIsFront(player1TopRight,
@@ -563,31 +562,6 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
                 DeckPosition.BOTTOM_LEFT, player1)}
             player1BottomRight.onMouseClicked = {checkIfCardFromDeckIsFront(player1BottomRight,
                 DeckPosition.BOTTOM_RIGHT, player1)}
-
-            if (currentPlayerHand.value.toString() == "Q" || currentPlayerHand.value.toString() == "J"){
-                player2TopLeft.onMouseClicked = {checkIfCardFromDeckIsFront(player2TopLeft,
-                    DeckPosition.TOP_LEFT, player2)}
-                player2TopRight.onMouseClicked = {checkIfCardFromDeckIsFront(player2TopRight,
-                    DeckPosition.TOP_RIGHT, player2)}
-                player2BottomLeft.onMouseClicked = {checkIfCardFromDeckIsFront(player2BottomLeft,
-                    DeckPosition.BOTTOM_LEFT, player2)}
-                player2BottomRight.onMouseClicked = {checkIfCardFromDeckIsFront(player2BottomRight,
-                    DeckPosition.BOTTOM_RIGHT, player2)}
-
-            }
-            else{
-                player2TopLeft.onMouseClicked = {error("You can't see this card")}
-                player2TopRight.onMouseClicked = {error("You can't see this card")}
-                player2BottomLeft.onMouseClicked = {error("You can't see this card")}
-                player2BottomRight.onMouseClicked = {error("You can't see this card")}
-
-            }
-
-
-
-            //rootService.playerService.peakCardPlayer(, player1)
-        }
-        else if (!highlightDeckPlayer1 && highlightDeckPlayer2){
             player2TopLeft.onMouseClicked = {checkIfCardFromDeckIsFront(player2TopLeft,
                 DeckPosition.TOP_LEFT, player2)}
             player2TopRight.onMouseClicked = {checkIfCardFromDeckIsFront(player2TopRight,
@@ -596,8 +570,9 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
                 DeckPosition.BOTTOM_LEFT, player2)}
             player2BottomRight.onMouseClicked = {checkIfCardFromDeckIsFront(player2BottomRight,
                 DeckPosition.BOTTOM_RIGHT, player2)}
-
-            if (currentPlayerHand.value.toString() == "Q" || currentPlayerHand.value.toString() == "J"){
+        }
+        else{
+            if (highlightDeckPlayer1 && !highlightDeckPlayer2){
                 player1TopLeft.onMouseClicked = {checkIfCardFromDeckIsFront(player1TopLeft,
                     DeckPosition.TOP_LEFT, player1)}
                 player1TopRight.onMouseClicked = {checkIfCardFromDeckIsFront(player1TopRight,
@@ -606,19 +581,27 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
                     DeckPosition.BOTTOM_LEFT, player1)}
                 player1BottomRight.onMouseClicked = {checkIfCardFromDeckIsFront(player1BottomRight,
                     DeckPosition.BOTTOM_RIGHT, player1)}
-
+                player2TopLeft.onMouseClicked = {error("You can't see this card")}
+                player2TopRight.onMouseClicked = {error("You can't see this card")}
+                player2BottomLeft.onMouseClicked = {error("You can't see this card")}
+                player2BottomRight.onMouseClicked = {error("You can't see this card")}
             }
-            else {
+            else if (!highlightDeckPlayer1 && highlightDeckPlayer2){
+                player2TopLeft.onMouseClicked = {checkIfCardFromDeckIsFront(player2TopLeft,
+                    DeckPosition.TOP_LEFT, player2)}
+                player2TopRight.onMouseClicked = {checkIfCardFromDeckIsFront(player2TopRight,
+                    DeckPosition.TOP_RIGHT, player2)}
+                player2BottomLeft.onMouseClicked = {checkIfCardFromDeckIsFront(player2BottomLeft,
+                    DeckPosition.BOTTOM_LEFT, player2)}
+                player2BottomRight.onMouseClicked = {checkIfCardFromDeckIsFront(player2BottomRight,
+                    DeckPosition.BOTTOM_RIGHT, player2)}
                 player1TopLeft.onMouseClicked = {error("You can't see this card")}
                 player1TopRight.onMouseClicked = {error("You can't see this card")}
                 player1BottomLeft.onMouseClicked = {error("You can't see this card")}
                 player1BottomRight.onMouseClicked = {error("You can't see this card")}
             }
-
-
-           // nextTurnButton.text = "Next turn"
-            //nextTurnButton.onMouseClicked = {rootService.gameService.openNextPlayerWindow()}
         }
+
 
     }
 
