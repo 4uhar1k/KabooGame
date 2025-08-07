@@ -120,6 +120,10 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         visual = ColorVisual(255, 255, 255)
     }
 
+    /**
+     * This button appears after player decided to view cards after end of the game
+     * It calls [KabooStartMenuScene]
+     */
     public val startNewGameButton = Button(
         width = 350, height = 75,
         posX = 785, posY = 450,
