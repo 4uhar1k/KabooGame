@@ -13,4 +13,5 @@ class Kaboo {
     var players : MutableList<Player> = mutableListOf()
     var newStack : Stack<Card> = Stack()
     var usedStack : Stack<Card> = Stack()
+    var log: String = ""
 }

@@ -125,6 +125,14 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
     ).apply {
         visual = ColorVisual(255, 255, 255)
     }
+    private val logLabel = Label(
+        width = 700,
+        height = 100,
+        posX = 585,
+        posY = 700,
+        text = "",
+        font = Font(size = 28)
+    )
 
 
     private val cardMap: BidirectionalMap<Card, CardView> = BidirectionalMap()
@@ -136,7 +144,8 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         addComponents(player1HandCard, player2HandCard, usedStack, newStack,
             player1TopLeft, player1TopRight, player1BottomLeft, player1BottomRight,
             player2TopLeft, player2TopRight, player2BottomLeft, player2BottomRight,
-            nextTurnButton, swapButton, player1NameLabel, player2NameLabel, startNewGameButton)
+            nextTurnButton, swapButton, player1NameLabel, player2NameLabel, startNewGameButton,
+            logLabel)
     }
 
     /**
@@ -160,6 +169,7 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         nextTurnButton.onMouseClicked = {rootService.gameService.openNextPlayerWindow()}
         swapButton.isVisible = false
         startNewGameButton.isVisible = false
+        logLabel.text = game.log
     }
 
     override fun refreshAfterAddPlayers() {
@@ -181,10 +191,12 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
      */
     override fun refreshAfterEachTurn() {
         swapButton.isVisible = false
+
         val game = rootService.currentGame
         checkNotNull(game)
         val currentPlayer = game.currentPlayer
         checkNotNull(currentPlayer) {"No current player found."}
+        logLabel.text = game.log
         val listOfCardViews1 = mutableListOf<CardView>(player1TopLeft.peek(),
             player1TopRight.peek(), player1BottomLeft.peek(), player1BottomRight.peek())
         val listOfCardViews2 = mutableListOf<CardView>(player2TopLeft.peek(),
@@ -372,6 +384,8 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
                 player2HandCard.clear()
             }
         }
+        if(!game.log.contains("viewed") && !game.log.contains("swapped your card"))
+            game.log = "${currentPlayer.name} has discarded the card"
     }
 
     /**
@@ -410,6 +424,10 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
             nextTurnButton.text = "Next turn"
             nextTurnButton.onMouseClicked = {rootService.gameService.openNextPlayerWindow()}
         }
+        if (!currentPlayer.viewedCards){
+            game.log = "${currentPlayer.name} has seen his bottom cards"
+            //logLabel.text = game.log
+        }
     }
 
     /**
@@ -417,7 +435,12 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
      * It removes the button "Knock"
      */
     override fun refreshAfterKnock() {
+        val game = rootService.currentGame
+        checkNotNull(game) { "No game found." }
+        val currentPlayer = game.currentPlayer
+        checkNotNull(currentPlayer) {"No current player found."}
         nextTurnButton.isVisible = false
+        game.log = "${currentPlayer.name} has knocked"
     }
 
     /**
@@ -478,6 +501,7 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         val cardImageLoader = CardImageLoader()
         initializeStackView(game.newStack, newStack, cardImageLoader)
         initializeStackView(game.usedStack, usedStack, cardImageLoader)
+        game.log = "${currentPlayer.name} has swapped his card on position ${position.toInt()+1}\n with ${currentPlayer.hand.toString()}"
     }
 
     /**
@@ -649,6 +673,10 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         if (player2BottomRight.peek().currentSide== CardView.CardSide.BACK)
             flipCard(player2BottomRight.peek())
         startNewGameButton.isVisible = true
+        if (winnerMessage != "Draw")
+            logLabel.text = "$winnerMessage is a winner!"
+        else
+            logLabel.text = "It's a $winnerMessage!"
     }
 
     private fun startNewGame(){
