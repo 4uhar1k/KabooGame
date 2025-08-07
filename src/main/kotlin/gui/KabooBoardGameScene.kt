@@ -35,6 +35,7 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
     private val player2HandCard = LabeledStackView(posX = 1595, posY = 100)
 
     private val player1TopLeft = LabeledStackView(posX = 145, posY = 450 )
+
     private val player1TopRight = LabeledStackView(posX = 345, posY = 450)
     private val player1BottomLeft = LabeledStackView(posX = 145, posY = 730 )
     private val player1BottomRight = LabeledStackView(posX = 345, posY = 730)
@@ -368,6 +369,11 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         }
         if(!game.log.contains("viewed") && !game.log.contains("swapped your card"))
             game.log = "${currentPlayer.name} has discarded the card"
+        if (currentPlayerHand.value.toString() == "Q") {
+                game.log = "${currentPlayer.name} viewed your card on position " +
+                        "${currentPlayer.otherSelected} and his on position ${currentPlayer.ownSelected} " +
+                        "but didn't swap"
+        }
     }
 
     /**
@@ -615,7 +621,8 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         checkNotNull(game) { "No game found." }
         val currentPlayer = game.currentPlayer
         checkNotNull(currentPlayer) {"No current player found."}
-
+        val currentPlayerHand = currentPlayer.hand
+        checkNotNull(currentPlayerHand)
         if (currentPlayer.ownSelected != DeckPosition.NOT_SELECTED &&
             currentPlayer.otherSelected != DeckPosition.NOT_SELECTED){
             nextTurnButton.isVisible = true
@@ -626,6 +633,12 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
             swapButton.onMouseClicked = {rootService.playerService.swapOther(currentPlayer.ownSelected,
                 currentPlayer.otherSelected); game.log = "${currentPlayer.name} swapped your card on position " +
                     "${currentPlayer.otherSelected} with his on position ${currentPlayer.ownSelected}"}
+            if (currentPlayerHand.value.toString() == "Q"){
+                nextTurnButton.onMouseClicked = {rootService.gameService.openNextPlayerWindow();
+                    game.log = "${currentPlayer.name} viewed your card on position " +
+                            "${currentPlayer.otherSelected} and his on position ${currentPlayer.ownSelected} " +
+                            "but didn't swap"}
+            }
 
         }
 
