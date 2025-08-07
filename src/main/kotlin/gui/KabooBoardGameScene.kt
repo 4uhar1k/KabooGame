@@ -131,7 +131,8 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         posX = 585,
         posY = 700,
         text = "",
-        font = Font(size = 28)
+        font = Font(size = 28),
+        isWrapText = true
     )
 
 
@@ -197,30 +198,12 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         val currentPlayer = game.currentPlayer
         checkNotNull(currentPlayer) {"No current player found."}
         logLabel.text = game.log
+        game.log = ""
         val listOfCardViews1 = mutableListOf<CardView>(player1TopLeft.peek(),
             player1TopRight.peek(), player1BottomLeft.peek(), player1BottomRight.peek())
         val listOfCardViews2 = mutableListOf<CardView>(player2TopLeft.peek(),
             player2TopRight.peek(), player2BottomLeft.peek(), player2BottomRight.peek())
-        /*if (game.players[0].viewedCards){
-            if (player1TopLeft.peek().currentSide == CardView.CardSide.FRONT)
-                flipCard(player1TopLeft.peek())
-            if (player1TopRight.peek().currentSide == CardView.CardSide.FRONT)
-                flipCard(player1TopRight.peek())
-            if (player1BottomLeft.peek().currentSide == CardView.CardSide.FRONT)
-                flipCard(player1BottomLeft.peek())
-            if (player1BottomRight.peek().currentSide == CardView.CardSide.FRONT)
-                flipCard(player1BottomRight.peek())
-        }
-        else if (game.players[1].viewedCards){
-            if (player2TopLeft.peek().currentSide == CardView.CardSide.FRONT)
-                flipCard(player2TopLeft.peek())
-            if (player2TopRight.peek().currentSide == CardView.CardSide.FRONT)
-                flipCard(player2TopRight.peek())
-            if (player2BottomLeft.peek().currentSide == CardView.CardSide.FRONT)
-                flipCard(player2BottomLeft.peek())
-            if (player2BottomRight.peek().currentSide == CardView.CardSide.FRONT)
-                flipCard(player2BottomRight.peek())
-        }*/
+
         if (currentPlayer.viewedCards){
             newStack.onMouseClicked = {rootService.playerService.drawCard(false)}
 
@@ -423,6 +406,12 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
             nextTurnButton.isVisible = true
             nextTurnButton.text = "Next turn"
             nextTurnButton.onMouseClicked = {rootService.gameService.openNextPlayerWindow()}
+            if (playerToPeak == currentPlayer){
+                game.log = "${currentPlayer.name} has viewed his card on position $positionToPeak"
+            }
+            else{
+                game.log = "${currentPlayer.name} has viewed your card on position $positionToPeak"
+            }
         }
         if (!currentPlayer.viewedCards){
             game.log = "${currentPlayer.name} has seen his bottom cards"
@@ -501,7 +490,7 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         val cardImageLoader = CardImageLoader()
         initializeStackView(game.newStack, newStack, cardImageLoader)
         initializeStackView(game.usedStack, usedStack, cardImageLoader)
-        game.log = "${currentPlayer.name} has swapped his card on position ${position.toInt()+1}\n with ${currentPlayer.hand.toString()}"
+        game.log = "${currentPlayer.name} has swapped his card on position ${position.toInt()+1}"
     }
 
     /**
@@ -591,6 +580,7 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
                 player2TopRight.onMouseClicked = {error("You can't see this card")}
                 player2BottomLeft.onMouseClicked = {error("You can't see this card")}
                 player2BottomRight.onMouseClicked = {error("You can't see this card")}
+
             }
 
 
@@ -647,10 +637,12 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
             currentPlayer.otherSelected != DeckPosition.NOT_SELECTED){
             nextTurnButton.isVisible = true
             nextTurnButton.text = "Next turn"
-            nextTurnButton.onMouseClicked = {rootService.gameService.openNextPlayerWindow()}
+            nextTurnButton.onMouseClicked = {rootService.gameService.openNextPlayerWindow(); game.log = "${currentPlayer.name} has discarded the card"}
             swapButton.isVisible = true
             swapButton.onMouseClicked = {rootService.playerService.swapOther(currentPlayer.ownSelected,
-                currentPlayer.otherSelected)}
+                currentPlayer.otherSelected); game.log = "${currentPlayer.name} swapped your card on position " +
+                    "${currentPlayer.otherSelected} with his on position ${currentPlayer.ownSelected}"}
+
         }
 
     }
@@ -676,7 +668,7 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         if (winnerMessage != "Draw")
             logLabel.text = "$winnerMessage is a winner!"
         else
-            logLabel.text = "It's a $winnerMessage!"
+            logLabel.text = "It's a draw!"
     }
 
     private fun startNewGame(){
