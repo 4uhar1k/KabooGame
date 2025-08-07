@@ -82,11 +82,13 @@ class KabooBoardGameApplication : BoardGameApplication("Kaboo"), Refreshable {
     }
 
     override fun refreshAfterAddPlayers() {
-        if (rootService.currentGame!!.currentPlayer == rootService.currentGame!!.players[0]){
-            kabooNextPlayerMenuScene = KabooNextPlayerMenuScene(rootService, rootService.currentGame!!.players[0].name)
+        val game = rootService.currentGame
+        checkNotNull(game) { "No game found." }
+        if (game.currentPlayer == game.players[0]){
+            kabooNextPlayerMenuScene = KabooNextPlayerMenuScene(rootService, game.players[0].name)
         }
         else{
-            kabooNextPlayerMenuScene = KabooNextPlayerMenuScene(rootService, rootService.currentGame!!.players[1].name)
+            kabooNextPlayerMenuScene = KabooNextPlayerMenuScene(rootService, game.players[1].name)
 
         }
         kabooNextPlayerMenuScene.readyButton.onMouseClicked = {refreshAfterStartGame()}

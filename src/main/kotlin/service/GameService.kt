@@ -112,8 +112,9 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
     fun endTurn(){
         val kaboo = rootService.currentGame
         checkNotNull(kaboo)
-        checkNotNull(kaboo.currentPlayer)
-        if (kaboo.currentPlayer!!.hand != null){
+        var currentPlayer = kaboo.currentPlayer
+        checkNotNull(currentPlayer)
+        if (currentPlayer.hand != null){
             rootService.playerService.discard()
         }
         if (kaboo.currentPlayer == player1)
@@ -126,11 +127,13 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
         else {
             onAllRefreshables { refreshAfterEachTurn() }
         }
-        if (kaboo.currentPlayer!!.viewedCards == false){
+        currentPlayer = kaboo.currentPlayer
+        checkNotNull(currentPlayer)
+        if (!currentPlayer.viewedCards){
             rootService.playerService.peakCardsFirstRound()
         }
-        kaboo.currentPlayer!!.ownSelected = DeckPosition.NOT_SELECTED
-        kaboo.currentPlayer!!.otherSelected = DeckPosition.NOT_SELECTED
+        currentPlayer.ownSelected = DeckPosition.NOT_SELECTED
+        currentPlayer.otherSelected = DeckPosition.NOT_SELECTED
 
 
     }
@@ -140,7 +143,8 @@ class GameService (private val rootService: RootService): AbstractRefreshingServ
      */
     fun openNextPlayerWindow(){
         val kaboo = rootService.currentGame
-        if (kaboo!!.currentPlayer == player1)
+        checkNotNull(kaboo)
+        if (kaboo.currentPlayer == player1)
             otherPlayer = player2
         else
             otherPlayer = player1

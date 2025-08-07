@@ -20,19 +20,20 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
         var usablePower = false
         val listOfUsablePowers = mutableListOf<String>("Q", "J", "10", "9", "8", "7")
         checkNotNull(kaboo){throw IllegalStateException("Game not started yet")}
-        checkNotNull(kaboo.currentPlayer)
-        check(kaboo.currentPlayer!!.hand == null){ throw IllegalStateException("You can't draw two cards")}
+        val currentPlayer = kaboo.currentPlayer
+        checkNotNull(currentPlayer)
+        check(currentPlayer.hand == null){ throw IllegalStateException("You can't draw two cards")}
         if (used){
             if (kaboo.usedStack.size == 0)
                 IllegalStateException("Used stack is empty")
-            kaboo.currentPlayer?.hand = kaboo.usedStack.pop()
+            currentPlayer.hand = kaboo.usedStack.pop()
 
         }
         else
         {
-            kaboo.currentPlayer?.hand = kaboo.newStack.pop()
+            currentPlayer.hand = kaboo.newStack.pop()
         }
-        if (listOfUsablePowers.any { it == kaboo.currentPlayer?.hand?.value.toString() }){
+        if (listOfUsablePowers.any { it == currentPlayer.hand?.value.toString() }){
             usablePower = true
         }
         onAllRefreshables { refreshAfterDraw(!used, usablePower) }
