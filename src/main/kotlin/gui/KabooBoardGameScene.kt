@@ -675,26 +675,51 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
             error("This card is already in front")
         }
         val listOfOtherPositions = mutableListOf<CardView>()
-        if (playerToPeak == player1){
-            listOfOtherPositions.add(player1TopLeft.peek())
-            listOfOtherPositions.add(player1TopRight.peek())
-            listOfOtherPositions.add(player1BottomLeft.peek())
-            listOfOtherPositions.add(player1BottomRight.peek())
-            listOfOtherPositions.remove(stackView.peek())
-            if (currentPlayer.ownSelected != DeckPosition.NOT_SELECTED){
-                "You have already peaked one card from this deck"
+        if (currentPlayer == player1){
+            if (playerToPeak == player1){
+                listOfOtherPositions.add(player1TopLeft.peek())
+                listOfOtherPositions.add(player1TopRight.peek())
+                listOfOtherPositions.add(player1BottomLeft.peek())
+                listOfOtherPositions.add(player1BottomRight.peek())
+                listOfOtherPositions.remove(stackView.peek())
+                if (currentPlayer.ownSelected != DeckPosition.NOT_SELECTED){
+                    error("You have already peaked one card from this deck")
+                }
+            }
+            else{
+                listOfOtherPositions.add(player2TopLeft.peek())
+                listOfOtherPositions.add(player2TopRight.peek())
+                listOfOtherPositions.add(player2BottomLeft.peek())
+                listOfOtherPositions.add(player2BottomRight.peek())
+                listOfOtherPositions.remove(stackView.peek())
+                if (currentPlayer.otherSelected != DeckPosition.NOT_SELECTED){
+                    error("You have already peaked one card from this deck")
+                }
             }
         }
         else{
-            listOfOtherPositions.add(player2TopLeft.peek())
-            listOfOtherPositions.add(player2TopRight.peek())
-            listOfOtherPositions.add(player2BottomLeft.peek())
-            listOfOtherPositions.add(player2BottomRight.peek())
-            listOfOtherPositions.remove(stackView.peek())
-            if (currentPlayer.otherSelected != DeckPosition.NOT_SELECTED){
-                "You have already peaked one card from this deck"
+            if (playerToPeak == player1){
+                listOfOtherPositions.add(player1TopLeft.peek())
+                listOfOtherPositions.add(player1TopRight.peek())
+                listOfOtherPositions.add(player1BottomLeft.peek())
+                listOfOtherPositions.add(player1BottomRight.peek())
+                listOfOtherPositions.remove(stackView.peek())
+                if (currentPlayer.otherSelected != DeckPosition.NOT_SELECTED){
+                    error("You have already peaked one card from this deck")
+                }
+            }
+            else{
+                listOfOtherPositions.add(player2TopLeft.peek())
+                listOfOtherPositions.add(player2TopRight.peek())
+                listOfOtherPositions.add(player2BottomLeft.peek())
+                listOfOtherPositions.add(player2BottomRight.peek())
+                listOfOtherPositions.remove(stackView.peek())
+                if (currentPlayer.ownSelected != DeckPosition.NOT_SELECTED){
+                    error("You have already peaked one card from this deck")
+                }
             }
         }
+
         for (i in 0..2){
             if (listOfOtherPositions[i].currentSide == CardView.CardSide.FRONT){
                 error("You have already peaked one card from this deck")

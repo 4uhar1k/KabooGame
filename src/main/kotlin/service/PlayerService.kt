@@ -143,6 +143,7 @@ class PlayerService(private val rootService: RootService): AbstractRefreshingSer
             else{
                 onAllRefreshables { refreshAfterUsePower(false,true) }
             }
+
         }
         else if (hand.value == CardValue.NINE || hand.value == CardValue.TEN){
             if (kaboo.currentPlayer == kaboo.players[0]){
