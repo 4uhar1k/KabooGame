@@ -115,10 +115,16 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         font = Font(size = 38)
     ).apply {
         visual = ColorVisual(255, 255, 255)
-        onMouseClicked = {
+    }
 
-            }
-        }
+    public val startNewGameButton = Button(
+        width = 350, height = 75,
+        posX = 785, posY = 450,
+        text = "Start new game",
+        font = Font(size = 38)
+    ).apply {
+        visual = ColorVisual(255, 255, 255)
+    }
 
 
     private val cardMap: BidirectionalMap<Card, CardView> = BidirectionalMap()
@@ -130,7 +136,7 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         addComponents(player1HandCard, player2HandCard, usedStack, newStack,
             player1TopLeft, player1TopRight, player1BottomLeft, player1BottomRight,
             player2TopLeft, player2TopRight, player2BottomLeft, player2BottomRight,
-            nextTurnButton, swapButton, player1NameLabel, player2NameLabel)
+            nextTurnButton, swapButton, player1NameLabel, player2NameLabel, startNewGameButton)
     }
 
     /**
@@ -153,6 +159,7 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         nextTurnButton.text = "Next turn"
         nextTurnButton.onMouseClicked = {rootService.gameService.openNextPlayerWindow()}
         swapButton.isVisible = false
+        startNewGameButton.isVisible = false
     }
 
     override fun refreshAfterAddPlayers() {
@@ -641,6 +648,11 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
             flipCard(player2BottomLeft.peek())
         if (player2BottomRight.peek().currentSide== CardView.CardSide.BACK)
             flipCard(player2BottomRight.peek())
+        startNewGameButton.isVisible = true
+    }
+
+    private fun startNewGame(){
+
     }
 
     /**

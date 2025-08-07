@@ -26,6 +26,7 @@ class KabooBoardGameApplication : BoardGameApplication("Kaboo"), Refreshable {
     private var kabooNextPlayerMenuScene = KabooNextPlayerMenuScene(rootService, "aa")
     private var kabooEndGameMenuScene = KabooEndGameMenuScene(rootService, "bb")
 
+
     /**
      * Initializes the application by displaying the [KabooStartMenuScene].
      */
@@ -53,7 +54,7 @@ class KabooBoardGameApplication : BoardGameApplication("Kaboo"), Refreshable {
     override fun refreshAfterStartGame() {
         this.hideMenuScene()
         println("Kaboo Board Game Started!")
-
+        kabooBoardGameScene.startNewGameButton.onMouseClicked = {refreshAfterStartNewGame()}
     }
 
     /**
@@ -104,6 +105,10 @@ class KabooBoardGameApplication : BoardGameApplication("Kaboo"), Refreshable {
         }
         kabooEndGameMenuScene.viewCardsButton.onMouseClicked = {viewCards()}
         this.showMenuScene(kabooEndGameMenuScene)
+    }
+
+    override fun refreshAfterStartNewGame() {
+        this.showMenuScene(kabooStartMenuScene)
     }
 
     /**

@@ -21,6 +21,14 @@ interface Refreshable{
     }
 
     /**
+     * Refreshable, that displays [gui.KabooStartMenuScene]
+     * after the player klicked on "Start new game" button
+     */
+    fun refreshAfterStartNewGame(){
+
+    }
+
+    /**
      * The method displays the main game screen after the names of both players are added.
      */
     fun refreshAfterAddPlayers(){
