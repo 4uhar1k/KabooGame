@@ -165,6 +165,15 @@ class KabooBoardGameScene(val rootService: RootService): BoardGameScene(), Refre
         checkNotNull(game)
         val currentPlayer = game.currentPlayer
         checkNotNull(currentPlayer)
+        newStack.onMouseClicked = {}
+        player1TopLeft.onMouseClicked = {}
+        player1TopRight.onMouseClicked = {}
+        player1BottomLeft.onMouseClicked = {}
+        player1BottomRight.onMouseClicked = {}
+        player2TopLeft.onMouseClicked = {}
+        player2TopRight.onMouseClicked = {}
+        player2BottomLeft.onMouseClicked = {}
+        player2BottomRight.onMouseClicked = {}
         if (currentPlayer == game.players[1]){
             player2NameLabel.font = Font(size = 38, color = Color.RED)
             player1NameLabel.font = Font(size = 38, color = Color.BLACK)
