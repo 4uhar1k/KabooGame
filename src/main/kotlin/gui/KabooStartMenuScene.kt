@@ -45,7 +45,7 @@ class KabooStartMenuScene(val rootService: RootService) : MenuScene(1000,1000), 
         text = "Player 1",
         font = Font(size = 28)
     ).apply {
-        onKeyPressed = {
+        onKeyReleased = {
             startButton.isDisabled = this.text.isBlank() || p2Input.text.isBlank()
         }
     }
@@ -65,7 +65,7 @@ class KabooStartMenuScene(val rootService: RootService) : MenuScene(1000,1000), 
         text = "Player 2",
         font = Font(size = 28)
     ).apply {
-        onKeyPressed = {
+        onKeyReleased = {
             startButton.isDisabled = p1Input.text.isBlank() || this.text.isBlank()
         }
     }
